@@ -47,13 +47,13 @@ class Settings(BaseSettings):
             self.FRONTEND_HOST
         ]
 
-    PROJECT_NAME: str
+    PROJECT_NAME: real_estate_db 
     SENTRY_DSN: HttpUrl | None = None
-    POSTGRES_SERVER: str
+    POSTGRES_SERVER: localhost
     POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str = ""
-    POSTGRES_DB: str = ""
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: str = "huongthap1"
+    POSTGRES_DB: str = "real_estate_db"
 
     @computed_field  # type: ignore[prop-decorator]
     @property
