@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException
-from typing import List, Optional
+from typing import List, Optional, Any
 from uuid import uuid4
 from app.api.deps import SessionDep
+from schemas.property import Property, PropertyResponse, PropertiesResponse, PropertyCreate, PropertyUpdate, ApprovePostResponse, PreviewPostResponse
 
-router = APIRouter(prefix="/properties", tags="properties")
+router = APIRouter(prefix="/properties", tags=["properties"])
 
 @router.get("/", response_model=PropertiesResponse)
 def get_properties(

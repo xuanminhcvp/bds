@@ -47,11 +47,11 @@ class Settings(BaseSettings):
             self.FRONTEND_HOST
         ]
 
-    PROJECT_NAME: real_estate_db 
+    PROJECT_NAME: str = "real_estate_db" 
     SENTRY_DSN: HttpUrl | None = None
-    POSTGRES_SERVER: localhost
+    POSTGRES_SERVER: str = "localhost"
     POSTGRES_PORT: int = 5432
-    POSTGRES_USER: postgres
+    POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "huongthap1"
     POSTGRES_DB: str = "real_estate_db"
 

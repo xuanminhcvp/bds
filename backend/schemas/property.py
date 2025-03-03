@@ -24,6 +24,17 @@ class PropertyResponse(PropertyBase):
     id: int 
     created_at: datetime
 
+class PropertiesResponse(PropertyBase):
+    properties: list[PropertyResponse]
+
+class ApprovePostResponse(BaseModel):
+    message: str 
+    post_id: str
+    is_approved: bool 
+
+class PreviewPostResponse(BaseModel):
+    preview: PropertyResponse
+
     class Config:
         orm_mode = True
 

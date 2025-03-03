@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.api.deps import SessionDep
-from app.models.models import Wishlist, WishlistCreate, WishlistResponse
+from schemas.wishlist import WishlistResponse, WishlistCreate
+from app.models.wishlist import Wishlist
+from typing import Any 
 
 router = APIRouter(prefix="/wishlist", tags=["wishlist"])
 
 @router.post("/wishlist/", response_model=WishlistResponse)
 def add_to_wishlist(session: SessionDep, wishlist: WishlistCreate) -> Any:
-    existing_entry = session.execute(Wishlist).filter(Wishlist.user_id == user_id, Wishlist.property_id = wishlist.property_id).first()
+    existing_entry = session.execute(Wishlist).filter(Wishlist.user_id == user_id, Wishlist.property_id == wishlist.property_id).first()
 
     if existing_entry:
         raise HTTPException(status_code=404, detail="Already in wishlist")
@@ -23,7 +25,7 @@ def get_wishlist(session: SessionDep, user_id: str):
     return wishlist
 
 @router.delete("/wishlist/{property_id}")
-def remove_from_wishlist(session: SessionDep, property_id: str)
+def remove_from_wishlist(session: SessionDep, property_id: str):
     wishlist_item = session.execute(Wishlist).filter(Wishlist.user_id == user_id, Wishlist.property_id == property_id).first()
 
     if not wishlist_item:
