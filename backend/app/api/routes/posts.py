@@ -3,6 +3,7 @@ from typing import List, Optional, Any
 from uuid import uuid4
 from app.api.deps import SessionDep
 from schemas.property import Property, PropertyResponse, PropertiesResponse, PropertyCreate, PropertyUpdate, ApprovePostResponse, PreviewPostResponse
+from schemas.post import DeletePostResponse
 
 router = APIRouter(prefix="/properties", tags=["properties"])
 
@@ -57,7 +58,7 @@ def update_property(id:str, session: SessionDep, property_update: PropertyUpdate
 
     return property_item
 
-@router.delete("/{id}/", response_model="DeletePostResponse")
+@router.delete("/{id}/", response_model=DeletePostResponse)
 def delete_property(session: SessionDep, id: str) -> Any:
     statement = select(Property).filter(Property.id == id).first()
     property_item = session.exec(statement)

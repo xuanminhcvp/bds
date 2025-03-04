@@ -24,7 +24,7 @@ class TransactionInDB(TransactionBase):
     id: int = Field(...)
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TransactionResponse(TransactionInDB):
     pass 

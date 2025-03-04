@@ -2,14 +2,15 @@ import uuid
 from typing import Any 
 
 from sqlmodel import Session, select 
-from schemas.user import UserCreate, UserUpdate, User
+from schemas.user import UserCreate, UserUpdate, UserSchema
 from schemas.property import PropertyCreate, Property
 from schemas.transaction import TransactionCreate, TransactionUpdate, Transaction
 from schemas.review import ReviewCreate, Review
+from app.models.user import User
 from app.core.security import get_password_hash, verify_password 
 
-def create_user(*, session: Session, user_create: UserCreate) -> User:
-    db_obj = User.model_validate(
+def create_user(*, session: Session, user_create: UserCreate) -> UserSchema:
+    db_obj = UserSchema.model_validate(
         user_create, update={"hashed_password": get_password_hash(user_create.password)}
     )
     session.add(db_obj)
@@ -17,7 +18,7 @@ def create_user(*, session: Session, user_create: UserCreate) -> User:
     session.refresh(db_obj)
     return db_obj
 
-def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
+def update_user(*, session: Session, db_user: UserSchema, user_in: UserUpdate) -> Any:
     user_data = user_in.model_dump(exclude_unset=True)
     extra_data = {}
     if "password" in user_data:
@@ -30,12 +31,12 @@ def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
     session.refresh(db_user)
     return db_user
 
-def get_user_by_email(*, session: Session, email: str) -> User | None:
+def get_user_by_email(*, session: Session, email: str) -> UserSchema | None:
     statement = select(User).where(User.email == email)
     session_user = session.exec(statement).first()
     return session_user
 
-def authenticate(*, session: Session, email: str, password: str) -> User | None:
+def authenticate(*, session: Session, email: str, password: str) -> UserSchema | None:
     db_user = get_user_by_email(session=session, email=email)
     if not db_user:
         return None
