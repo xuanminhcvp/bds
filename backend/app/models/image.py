@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Boolean, Integer
-from database import Base
+from app.database import Base
 
 class Image(Base):
     __tablename__ = "images"

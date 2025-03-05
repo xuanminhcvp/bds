@@ -1,5 +1,5 @@
 from app.repositories.payment_repository import PaymentRepository
-from app.models.payment import Payment
+from app.models import Payment
 from decimal import Decimal
 
 class PaymentService:

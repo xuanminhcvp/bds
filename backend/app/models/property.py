@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import Column, String, Integer, DECIMAL, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
-from database import Base
+from app.database import Base
 
 class Property(Base):
     __tablename__ = "properties"
@@ -17,13 +17,14 @@ class Property(Base):
     bathrooms = Column(Integer, nullable=False)
     property_type = Column(String, nullable=False)
     status = Column(String, nullable=False)
-    owner_id = Column(String, ForeignKey("user.id"), nullable=False)
+    owner_id = Column(String, ForeignKey("users.id"), nullable=False)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     update_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    owner = relationship("User", back_populates="propertied")
+    owner = relationship("User", back_populates="properties")
     reviews = relationship("Review", back_populates="property")
+    wishlist = relationship("Wishlist", back_populates="property")
 
 
 

@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Boolean, DateTime,Integer
+from sqlalchemy import Column, String, Boolean, DateTime,Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
 from app.database import Base
@@ -17,8 +17,9 @@ class User(Base):
     is_verified = Column(Boolean,default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     update_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    role_id = Column(Integer, ForeignKey("roles.id")) 
 
-
+    role = relationship("Role", back_populates="users")
     properties = relationship("Property", back_populates="owner")
     wishlist = relationship("Wishlist", back_populates="user")
     reviews = relationship("Review", back_populates="user")

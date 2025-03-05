@@ -5,7 +5,7 @@ from app.api.deps import get_current_active_superuser, SessionDep
 from app import crud
 from schemas.user import UserPublic, UsersPublic, UserCreate, UserSchema, UserRegister, UserUpdate
 from schemas.token import Message, UpdatePassword
-from app.models.user import User
+from app.models import User
 from app.api.deps import CurrentUser
 from app.core.security import verify_password, get_password_hash
 from sqlmodel import func, select

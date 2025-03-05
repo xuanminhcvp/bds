@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models import Commitsion 
+from app.models import Commission 
 from decimal import Decimal
 import SessionDep
 

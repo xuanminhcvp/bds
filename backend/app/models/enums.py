@@ -1,6 +1,6 @@
 from enum import Enum
 
-class TransactionStatusEnum(enum.Enum):
+class TransactionStatusEnum(Enum):
     PENDING = "pending"
     COMPLETED = "completed"
     CANCELED = "canceled"

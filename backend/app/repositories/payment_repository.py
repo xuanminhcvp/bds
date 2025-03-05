@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.models.payment import Payment
+from app.models import Payment
 from decimal import Decimal
 
 class PaymentRepository:

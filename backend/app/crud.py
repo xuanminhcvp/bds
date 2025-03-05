@@ -6,7 +6,7 @@ from schemas.user import UserCreate, UserUpdate, UserSchema
 from schemas.property import PropertyCreate, Property
 from schemas.transaction import TransactionCreate, TransactionUpdate, Transaction
 from schemas.review import ReviewCreate, Review
-from app.models.user import User
+from app.models import User
 from app.core.security import get_password_hash, verify_password 
 
 def create_user(*, session: Session, user_create: UserCreate) -> UserSchema:
