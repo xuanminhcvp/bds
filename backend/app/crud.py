@@ -2,17 +2,25 @@ import uuid
 from typing import Any 
 
 from sqlmodel import Session, select 
-from schemas.user import UserCreate, UserUpdate, UserSchema
-from schemas.property import PropertyCreate, Property
-from schemas.transaction import TransactionCreate, TransactionUpdate, Transaction
-from schemas.review import ReviewCreate, Review
-from app.models import User
-from app.core.security import get_password_hash, verify_password 
+from backend.schemas.user import UserCreate, UserUpdate, UserSchema
+from backend.schemas.property import PropertyCreate, Property
+from backend.schemas.transaction import TransactionCreate, TransactionUpdate, Transaction
+from backend.schemas.review import ReviewCreate, Review
+from backend.app.models import User
+from backend.app.core.security import get_password_hash, verify_password 
 
 def create_user(*, session: Session, user_create: UserCreate) -> UserSchema:
-    db_obj = UserSchema.model_validate(
-        user_create, update={"hashed_password": get_password_hash(user_create.password)}
+    
+    hashed_password = get_password_hash(user_create.password)
+    
+    db_obj = User(
+        email=user_create.email,
+        full_name=user_create.full_name,
+        hashed_password=hashed_password
     )
+    # db_obj = UserSchema.model_validate(
+    #    user_create, update={"hashed_password": get_password_hash(user_create.password)}
+    # )
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)

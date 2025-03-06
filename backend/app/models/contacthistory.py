@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, Column, DateTime, ForeignKey, Text
-from app.database import Base
+from backend.app.database import Base
 from datetime import datetime, timezone
 
 class ContactHistory(Base):

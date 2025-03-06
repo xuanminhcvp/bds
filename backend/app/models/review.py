@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, func 
 from sqlalchemy.orm import relationship
-from app.database import Base 
+from backend.app.database import Base 
 
 class Review(Base):
     __tablename__ = "reviews"
@@ -15,4 +15,3 @@ class Review(Base):
 
     user = relationship("User", back_populates="reviews")
     property = relationship("Property", back_populates="reviews")
-

@@ -5,14 +5,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app import crud
-from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
-from app.core import security
-from app.core.config import settings
-from app.core.security import get_password_hash
-from schemas.token import Token, Message, NewPassword
-from schemas.user import UserPublic
-from app.utils import (
+from backend.app import crud
+from backend.app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
+from backend.app.core import security
+from backend.app.core.config import settings
+from backend.app.core.security import get_password_hash
+from backend.schemas.token import Token, Message, NewPassword
+from backend.schemas.user import UserPublic
+from backend.app.utils import (
     generate_password_reset_token,
     generate_reset_password_email,
     send_email,
@@ -39,9 +39,9 @@ def login_access_token(
     return Token(
         access_token=security.create_access_token(
             user.id, expires_delta=access_token_expires
-        )
+        ), 
+        token_type="bearer"
     )
-
 
 @router.post("/login/test-token", response_model=UserPublic)
 def test_token(current_user: CurrentUser) -> Any:

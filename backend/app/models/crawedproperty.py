@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, Column, DateTime, ForeignKey, Text, String, Float, Boolean
-from app.database import Base
+from backend.app.database import Base
 from datetime import datetime, timezone
 
 class CrawledProperty(Base):

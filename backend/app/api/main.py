@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from app.api.routes import login, private, users, posts, wishlist  
-from app.core.config import settings
+from backend.app.api.routes import login, private, users, posts, wishlist  
+from backend.app.core.config import settings
 
 router = APIRouter()
 api_router = APIRouter()

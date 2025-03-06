@@ -1,13 +1,13 @@
 import uuid
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.deps import get_current_active_superuser, SessionDep
-from app import crud
-from schemas.user import UserPublic, UsersPublic, UserCreate, UserSchema, UserRegister, UserUpdate
-from schemas.token import Message, UpdatePassword
-from app.models import User
-from app.api.deps import CurrentUser
-from app.core.security import verify_password, get_password_hash
+from backend.app.api.deps import get_current_active_superuser, SessionDep
+from backend.app import crud
+from backend.schemas.user import UserPublic, UsersPublic, UserCreate, UserSchema, UserRegister, UserUpdate
+from backend.schemas.token import Message, UpdatePassword
+from backend.app.models import User
+from backend.app.api.deps import CurrentUser
+from backend.app.core.security import verify_password, get_password_hash
 from sqlmodel import func, select
 
 
@@ -92,7 +92,12 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
             status_code=400,
             detail="the user with this email already exist in the system"
         )
-    user_create = UserCreate.model_validate(user_in)
+    # Tạo đối tượng UserCreate với mật khẩu đã mã hóa
+    user_create = UserCreate(
+        email=user_in.email,
+        full_name=user_in.full_name,
+        password=user_in.password
+    )
     user = crud.create_user(session=session, user_create=user_create)
     return user 
 

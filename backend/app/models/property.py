@@ -2,12 +2,12 @@ import uuid
 from sqlalchemy import Column, String, Integer, DECIMAL, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
-from app.database import Base
+from backend.app.database import Base
 
 class Property(Base):
     __tablename__ = "properties"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False)
     description = Column(String, nullable=True)
     price = Column(DECIMAL(10,2), nullable=False)
@@ -17,7 +17,7 @@ class Property(Base):
     bathrooms = Column(Integer, nullable=False)
     property_type = Column(String, nullable=False)
     status = Column(String, nullable=False)
-    owner_id = Column(String, ForeignKey("users.id"), nullable=False)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     update_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

@@ -10,7 +10,7 @@ from .review import Review
 from .transaction import Transaction
 from .wishlist import Wishlist
 from .payment import Payment
-from app.database import Base
+from backend.app.database import Base
 
 Base.registry.configure()
 

@@ -4,17 +4,17 @@ from datetime import datetime
 import uuid
 
 class UserBase(BaseModel):
-    email: EmailStr
-    full_name: Optional[str] = None
+    email: EmailStr = Field(..., max_length=255)
+    full_name: Optional[str] = Field(None, max_length=255)
 
 class UserSchema(UserBase):
     password: str
 
 class UserCreate(UserBase):
-    password: str
+    password: str = Field(..., min_length=8, max_length=40)
  
 class UserPublic(UserBase):
-    id: uuid.UUID
+    id: int 
 
 class UsersPublic(BaseModel):
     data: list[UserPublic]

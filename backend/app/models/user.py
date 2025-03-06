@@ -2,12 +2,12 @@ import uuid
 from sqlalchemy import Column, String, Boolean, DateTime,Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
-from app.database import Base
+from backend.app.database import Base
 
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
+    id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String, unique=True, index=True, nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)

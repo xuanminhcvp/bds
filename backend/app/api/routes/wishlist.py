@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.deps import SessionDep
-from schemas.wishlist import WishlistResponse, WishlistCreate
-from app.models import Wishlist
+from backend.app.api.deps import SessionDep
+from backend.schemas.wishlist import WishlistResponse, WishlistCreate
+from backend.app.models import Wishlist
 from typing import Any 
 
 router = APIRouter(prefix="/wishlist", tags=["wishlist"])
