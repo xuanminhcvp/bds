@@ -8,6 +8,7 @@ class Payment(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     transaction_id = Column(Integer, ForeignKey("transactions.id"))
+    user_id = Column(Integer)
     amount = Column(DECIMAL(10,2))
     payment_method = Column(String)
     payment_status = Column(String)

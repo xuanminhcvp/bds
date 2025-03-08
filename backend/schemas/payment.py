@@ -14,10 +14,12 @@ class PaymentCreate(PaymentBase):
 class PaymentUpdate(PaymentBase):
     payment_status: Optional[str] = None
 
-class Payment(PaymentBase):
-    id: int
+class PaymentSchema(PaymentBase):
     transaction_id: int 
-    payment_date: datetime
+    
+class PaymentResponse(PaymentCreate):
+    payment_id: int 
+    payment_url: Optional[str]
 
     class Config:
         from_attributes: True

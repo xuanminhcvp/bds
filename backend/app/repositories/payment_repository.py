@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from app.models import Payment
+from backend.app.models import Payment
+from backend.schemas.payment import PaymentSchema
 from decimal import Decimal
 
 class PaymentRepository:
@@ -12,7 +13,7 @@ class PaymentRepository:
         return session.select(Payment).filter(Payment.transaction_id == transaction_id).all()
     
     @staticmethod
-    def create_payment(session: Session, transaction_id: int, amount: Decimal, payment_method: str, payment_status: str) -> Payment:
+    def create_payment(session: Session, transaction_id: int, amount: Decimal, payment_method: str, payment_status: str) -> PaymentSchema:
         payment = Payment(
             transaction_id=transaction_id,
             amount=amount,
@@ -33,5 +34,15 @@ class PaymentRepository:
             session.refresh(payment)
             return payment
         return None
+    
+    @staticmethod
+    def get_payment_history(session: Session, user_id: int):
+        user_payment_history = session.query(Payment).filter(Payment.user_id == user_id).all()
+        return user_payment_history
+    
+    @staticmethod 
+    def get_payment_by_transaction_id(session: Session, transaction_id: int):
+        payment_by_transaction_id = session.query(Payment).filter(Payment.transaction_id == transaction_id).first()
+        return payment_by_transaction_id
     
     
