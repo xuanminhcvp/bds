@@ -1,4 +1,5 @@
 import uuid
+from sqlalchemy.dialects.postgresql import UUID 
 from sqlalchemy import Column, String, Boolean, DateTime,Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
@@ -7,7 +8,7 @@ from backend.app.database import Base
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4 ,unique=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)

@@ -1,7 +1,7 @@
-import uuid
+from uuid import UUID, uuid4 
 from typing import Any 
 
-from sqlmodel import Session, select 
+from sqlmodel import Session, select, update, delete 
 from backend.schemas.user import UserCreate, UserUpdate, UserSchema
 from backend.schemas.property import PropertyCreate, Property
 from backend.schemas.transaction import TransactionCreate, TransactionUpdate, Transaction
@@ -14,6 +14,7 @@ def create_user(*, session: Session, user_create: UserCreate) -> UserSchema:
     hashed_password = get_password_hash(user_create.password)
     
     db_obj = User(
+        id=uuid4(),
         email=user_create.email,
         full_name=user_create.full_name,
         hashed_password=hashed_password
@@ -52,96 +53,96 @@ def authenticate(*, session: Session, email: str, password: str) -> UserSchema |
         return None
     return db_user
 
-def create_property(*, session: Session, property: PropertyCreate, owner_id: int):
-    db_property = Property(**property.model_dump(), owner_id=owner_id)
+def create_property(*, session: Session, property: PropertyCreate, owner_id: UUID):
+    db_property = Property(id=uuid4(),**property.model_dump(), owner_id=owner_id)
     session.add(db_property)
     session.commit()
     session.refresh(db_property)
     return db_property
 
-def get_property(session: Session, property_id: int):
+def get_property(session: Session, property_id: UUID):
     statement = select(Property).where(Property.id == property_id)
-    result = session.execute(statement)
+    result = session.exec(statement)
     return result.scalar_one_or_none()
 
 def get_all_properties(session: Session, skip: int = 0, limit: int = 10):
     statement = select(Property).offset(skip).limit(limit)
-    result = session.execute(statement)
+    result = session.exec(statement)
     return result.scalars().all()
 
-def update_property(session: Session, property_id: int, update_data: dict):
+def update_property(session: Session, property_id: UUID, update_data: dict):
     statement = (
         update(Property)
         .where(Property.id == property_id)
         .values(**update_data)
     )
-    session.execute(statement)
+    session.exec(statement)
     session.commit() 
 
-def delete_property(session: Session, property_id: int):
+def delete_property(session: Session, property_id: UUID):
     statement = delete(Property).where(Property.id == property_id)
-    session.execute(statement)
+    session.exec(statement)
     session.commit()
 
 def create_transaction(db: Session, transaction: TransactionCreate):
-    db_transaction = Transaction(**transaction.model_dump(), status="pending")
+    db_transaction = Transaction(id=uuid4(), **transaction.model_dump(), status="pending")
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
     return db_transaction
 
-def get_transaction(session: Session, transaction_id: int):
+def get_transaction(session: Session, transaction_id: UUID):
     statement = select(Transaction).where(Transaction.id == transaction_id)
-    result = session.execute(statement)
+    result = session.exec(statement)
     return result.scalar_one_or_none()
 
-def get_transactions_by_user(session: Session, user_id: int):
+def get_transactions_by_user(session: Session, user_id: UUID):
     statement = select(Transaction).where(Transaction.user_id == user_id)
-    result = session.execute(statement)
+    result = session.exec(statement)
     return result.scalars().all()
 
-def update_transaction(session: Session, transaction_id: int, update_data: dict):
+def update_transaction(session: Session, transaction_id: UUID, update_data: dict):
     statement = (
         update(Transaction)
         .where(Transaction.id == transaction_id)
         .values(**update_data)
     )
-    session.execute(statement)
+    session.exec(statement)
     session.commit()
 
-def delete_transaction(session: Session, transaction_id: int):
+def delete_transaction(session: Session, transaction_id: UUID):
     statement = (
         delete(Transaction)
         .where(Transaction.id == transaction_id)
     )
-    session.execute(statement)
+    session.exec(statement)
     session.commit()
 
 def create_review(session: Session, review: ReviewCreate):
-    db_review = Review(**review.model_dump())  # Dùng model_dump() thay dict()
+    db_review = Review(id=uuid4(), **review.model_dump())  
     session.add(db_review)
     session.commit()
     session.refresh(db_review)
     return db_review
 
-def get_reviews_by_property(session: Session, property_id: int):
+def get_reviews_by_property(session: Session, property_id: UUID):
     statement = select(Review).where(Review.property_id == property_id)
-    result = session.execute(statement)
+    result = session.exec(statement)
     return result.scalars().all()
 
-def update_review(session: Session, review_id: int, update_data: dict):
+def update_review(session: Session, review_id: UUID, update_data: dict):
     statement = (
         update(Review)
         .where(Review.id == review_id)
         .values(**update_data)
     )
-    session.execute(statement)
+    session.exec(statement)
     session.commit()
 
-def delete_review(session: Session, review_id: int):
+def delete_review(session: Session, review_id: UUID):
     statement = (
         delete(Review)
         .where(Review.id == review_id)
     )
-    session.execute(statement)
+    session.exec(statement)
     session.commit()

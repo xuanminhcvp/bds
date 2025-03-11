@@ -1,6 +1,8 @@
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select 
-from schemas.property import Property
+# from backend.schemas.property import Property
+from backend.app.models.property import Property
 
 class PropertyRepository:
     @staticmethod
@@ -9,8 +11,12 @@ class PropertyRepository:
         return result.scalars().all()
 
     @staticmethod
-    async def get_property_by_id(db: AsyncSession, property_id: int):
-        return await db.get(Property, property_id)
+    async def get_property_by_id(session: AsyncSession, property_id: UUID):
+        result = await session.execute(select(Property).where(Property.id == property_id))
+        property = result.scalars().first()  
+        if property is None:
+            return None  
+        return property
 
     @staticmethod
     async def create_property(db: AsyncSession, property_data):

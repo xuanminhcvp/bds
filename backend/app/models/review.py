@@ -1,3 +1,5 @@
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, func 
 from sqlalchemy.orm import relationship
 from backend.app.database import Base 
@@ -5,13 +7,13 @@ from backend.app.database import Base
 class Review(Base):
     __tablename__ = "reviews"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     rating = Column(Integer, nullable=False)
     comment = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
-    property_id = Column(Integer, ForeignKey("properties.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
+    property_id = Column(UUID(as_uuid=True), ForeignKey("properties.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
     user = relationship("User", back_populates="reviews")
     property = relationship("Property", back_populates="reviews")

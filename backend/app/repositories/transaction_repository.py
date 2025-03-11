@@ -1,6 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from schemas.transaction import Transaction
+from backend.schemas.transaction import TransactionCreate
+from backend.app.models.transaction import Transaction
+from uuid import UUID
 
 class TransactionRepository:
     @staticmethod
@@ -8,16 +10,22 @@ class TransactionRepository:
         result = await db.execute(select(Transaction))
         return result.scalar().all()
     
+    # success
     @staticmethod
-    async def get_transaction_by_id(db: AsyncSession, transaction_id: int):
-        return await db.get(Transaction, transaction_id)
+    async def get_transaction_by_id(session: AsyncSession, transaction_id: UUID):
+        result = session.execute(select(Transaction).where(Transaction.id == transaction_id))
+        transaction = result.scalars().first()  
+        if transaction is None:
+            return None  
+        return transaction
+    
     
     @staticmethod
-    async def create_transaction(db: AsyncSession, transaction_data: TransactionCreate)
-        new_transaction = Transaction(**transaction_data.dict())
-        db.add(new_transaction)
-        await db.commit()
-        await db.refresh(new_transaction)
+    async def create_transaction(session: AsyncSession, transaction_data: TransactionCreate):
+        new_transaction = Transaction(**transaction_data.model_dump())
+        session.add(new_transaction)
+        await session.commit()
+        await session.refresh(new_transaction)
         return new_transaction
     
     @staticmethod

@@ -1,4 +1,5 @@
-import uuid
+import uuid 
+from uuid import UUID 
 from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from backend.app.api.deps import get_current_active_superuser, SessionDep
@@ -8,10 +9,27 @@ from backend.schemas.token import Message, UpdatePassword
 from backend.app.models import User
 from backend.app.api.deps import CurrentUser
 from backend.app.core.security import verify_password, get_password_hash
+from backend.app.services.user_service import UserService
 from sqlmodel import func, select
 
 
 router = APIRouter(prefix="/users", tags=["users"])
+
+@router.get("/me", response_model=UserPublic)
+def read_user_me(current_user: CurrentUser):
+    return current_user
+
+@router.delete("/me", dependencies=[Depends(get_current_active_superuser)] ,response_model=Message)
+def delete_user_me(session: SessionDep, current_user: CurrentUser):
+    user_id = current_user.id 
+    return UserService.delete_user(session, user_id)
+
+
+
+
+
+
+
 
 @router.get(
     "/",
@@ -66,22 +84,9 @@ def update_password_me(
     session.commit()
     return Message(message="Password updated successfully")
 
-@router.get("/me", response_model=UserPublic)
-def read_user_me(current_user: CurrentUser) -> Any:
-    return current_user
 
-@router.delete("/me", response_model=Message)
-def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
-    if current_user.is_superuser:
-        raise HTTPException(
-            status_code=403,
-            detail="Super users are not allowed to delete themselves"
-        )
-    statement = delete(Property).where(col(Property.owner_id) == current_user.id)
-    session.exec(statement)
-    session.delete(current_user)
-    session.commit()
-    return Message(message="user deleted successfully")
+
+
 
 
 @router.post("/signup", response_model=UserPublic)
@@ -102,8 +107,8 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     return user 
 
 @router.get("/{user_id}", response_model=UserPublic)
-def get_user_by_id(user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser) -> Any:
-    user = session.get(User, user_id) 
+def get_user_by_id(user_id: UUID, session: SessionDep, current_user: CurrentUser) -> Any:
+    user = UserService.get_user_by_id(session, user_id)
     if user == current_user:
         return user 
     if not current_user.is_superuser:
@@ -117,7 +122,7 @@ def get_user_by_id(user_id: uuid.UUID, session: SessionDep, current_user: Curren
 def update_user(
     *,
     session: SessionDep,
-    user_id: uuid.UUID,
+    user_id: UUID,
     user_in: UserUpdate,
 ) -> Any:
     db_user = session.get(User, user_id)
@@ -137,23 +142,10 @@ def update_user(
     return db_user
 
 
-@router.delete("{user_id}", dependencies=[Depends(get_current_active_superuser)])
-def delete_user(session: SessionDep, user_id: uuid.UUID, curren_user: CurrentUser) -> Message:
-    user = session.get(User, user_id)
-    if not user: 
-        raise HTTPException(
-            status_code=404,
-            detail="User not found"
-        )
-    if user == curren_user:
-        raise HTTPException(
-            status_code=403,
-            detail="Super users are not allowed to delete themselves"
-        )
-    statement = delete(Property).where(col(Property.owner_id) == user_id)
-    session.exec(statement)
-    session.delete(user)
-    session.commit()
-    return Message(message="Deleted user sucessfully")
+@router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
+def delete_user(session: SessionDep, user_id: UUID, current_user: CurrentUser):
+    return UserService.delete_user(session, user_id, current_user)
+
+
 
 

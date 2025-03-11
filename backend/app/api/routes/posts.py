@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional, Any
-from uuid import uuid4
+from uuid import uuid4, UUID
 from backend.app.api.deps import SessionDep
 from backend.schemas.property import Property, PropertyResponse, PropertiesResponse, PropertyCreate, PropertyUpdate, ApprovePostResponse, PreviewPostResponse
 from backend.schemas.post import DeletePostResponse
@@ -26,7 +26,7 @@ def get_properties(
     return data
     
 @router.get("/{id}/", response_model=PropertyResponse)
-def get_property_by_id(session: SessionDep, id: str) -> Any:
+def get_property_by_id(session: SessionDep, id: UUID) -> Any:
     statement = select(Property).filter(Property.id == id).first()
     property_item = session.exec(statement)
     if not property_item:
@@ -44,7 +44,7 @@ def create_property(session: SessionDep, property_data: PropertyCreate) -> Any:
     return property_data
 
 @router.put("{id}", response_model=PropertyResponse)
-def update_property(id:str, session: SessionDep, property_update: PropertyUpdate) -> Any:
+def update_property(id: UUID, session: SessionDep, property_update: PropertyUpdate) -> Any:
     statement = select(Property).filter(Property.id == id).first()
     property_item = session.exec(statement)
     if not property_item:
@@ -59,7 +59,7 @@ def update_property(id:str, session: SessionDep, property_update: PropertyUpdate
     return property_item
 
 @router.delete("/{id}/", response_model=DeletePostResponse)
-def delete_property(session: SessionDep, id: str) -> Any:
+def delete_property(session: SessionDep, id: UUID) -> Any:
     statement = select(Property).filter(Property.id == id).first()
     property_item = session.exec(statement)
     if not property_item:
@@ -73,7 +73,7 @@ def delete_property(session: SessionDep, id: str) -> Any:
     return {"message": "Property delete successfully"}
 
 @router.patch("/{id}/approve", response_model=ApprovePostResponse)
-def approve_property(session: SessionDep, id: str) -> Any:
+def approve_property(session: SessionDep, id: UUID) -> Any:
     statement = select(Property).filter(Property.id == id).first()
     property_item = session.exec(statement)
     if not property_item:
@@ -93,7 +93,7 @@ def approve_property(session: SessionDep, id: str) -> Any:
     return {"message": "Property approved successfully", "post_id": id, "is_approved": True}
 
 @router.get("/{id}/preview", response_model=PreviewPostResponse)
-def preview_property(id: str, session: SessionDep) -> Any:
+def preview_property(id: UUID, session: SessionDep) -> Any:
     statement = select(Property).filter(Property.id == id).first()
     property_item = session.exec(statement)
 

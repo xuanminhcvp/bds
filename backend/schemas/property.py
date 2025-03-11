@@ -17,9 +17,6 @@ class PropertyCreate(PropertyBase):
 class PropertyUpdate(PropertyBase):
     pass 
 
-
-
-
 class PropertyResponse(PropertyBase):
     id: int 
     created_at: datetime

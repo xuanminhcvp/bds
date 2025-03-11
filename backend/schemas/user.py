@@ -19,7 +19,7 @@ class UserPublic(UserBase):
 class UsersPublic(BaseModel):
     data: list[UserPublic]
     count: int 
-
+    
 class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     password: Optional[str] = None
