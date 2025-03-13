@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from uuid import UUID 
 from datetime import datetime
 
 class PropertyBase(BaseModel):
@@ -7,6 +8,24 @@ class PropertyBase(BaseModel):
     description: Optional[str] = None
     price: float
     location: str 
+
+class PropertyResponse(PropertyBase):
+    id: UUID 
+    created_at: datetime
+    user_id: UUID 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Property(PropertyBase):
     pass 
@@ -17,9 +36,7 @@ class PropertyCreate(PropertyBase):
 class PropertyUpdate(PropertyBase):
     pass 
 
-class PropertyResponse(PropertyBase):
-    id: int 
-    created_at: datetime
+
 
 class PropertiesResponse(PropertyBase):
     properties: list[PropertyResponse]
