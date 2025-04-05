@@ -10,8 +10,8 @@ class ContactHistory(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     message = Column(Text)
     contact_date = Column(DateTime, default=datetime.now(timezone.utc))
-    property_id = Column(UUID(as_uuid=True), ForeignKey("properties.id"), nullable=False)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    property_id = Column(UUID(as_uuid=True), ForeignKey("properties.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     
     
 

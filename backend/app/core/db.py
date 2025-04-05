@@ -16,7 +16,7 @@ AsyncSessionLocal = sessionmaker(
 
 async def init_db(session: AsyncSession) -> None:
     result = await session.execute(select(User).where(User.email == settings.FIRST_SUPERUSER))
-    user = result.scalar().first()
+    user = result.scalar_one_or_none()
     if not user:
         user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,

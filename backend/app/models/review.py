@@ -12,8 +12,8 @@ class Review(Base):
     comment = Column(String, nullable=True)
     created_at = Column(DateTime, server_default=func.now())
 
-    property_id = Column(UUID(as_uuid=True), ForeignKey("properties.id"), nullable=False)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    property_id = Column(UUID(as_uuid=True), ForeignKey("properties.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
-    user = relationship("User", back_populates="reviews")
-    property = relationship("Property", back_populates="reviews")
+    user = relationship("User", back_populates="reviews", passive_deletes=True)
+    property = relationship("Property", back_populates="reviews", passive_deletes=True)

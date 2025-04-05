@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
-import uuid
+from uuid import UUID 
 
 class UserBase(BaseModel):
     email: EmailStr = Field(..., max_length=255)
@@ -12,9 +12,10 @@ class UserSchema(UserBase):
 
 class UserCreate(UserBase):
     password: str = Field(..., min_length=8, max_length=40)
- 
+
+#done
 class UserPublic(UserBase):
-    id: int 
+    id: UUID 
 
 class UsersPublic(BaseModel):
     data: list[UserPublic]
@@ -29,8 +30,17 @@ class UserRegister(BaseModel):
     password: str = Field(..., min_length=8, max_length=40)
     full_name: Optional[str] = Field(None, max_length=255)
 
+class UserHashed(BaseModel):
+    email: EmailStr
+    password: str 
+    full_name: Optional[str]
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str 
+
 class UserResponse(UserBase):
-    id: int 
+    id: UUID  
     created_at: datetime
 
     class Config:

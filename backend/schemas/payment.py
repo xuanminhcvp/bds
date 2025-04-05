@@ -2,24 +2,41 @@ from pydantic import BaseModel
 from decimal import Decimal
 from datetime import datetime
 from typing import Optional
+from uuid import UUID 
 
+#done
 class PaymentBase(BaseModel):
-    amount: Decimal
+    transaction_id: UUID
+    user_id: UUID 
+    amount: float
     payment_method: str
-    payment_status: str 
+    payment_status: str
 
 class PaymentCreate(PaymentBase):
-    transaction_id: int
+    pass 
+
+#done
+class PaymentResponse(PaymentCreate):
+    id: UUID
+
+
+
+
+
+
+
+
+
+
 
 class PaymentUpdate(PaymentBase):
-    payment_status: Optional[str] = None
+    pass
 
 class PaymentSchema(PaymentBase):
     transaction_id: int 
     
-class PaymentResponse(PaymentCreate):
-    payment_id: int 
-    payment_url: Optional[str]
+
+    
 
     class Config:
         from_attributes: True

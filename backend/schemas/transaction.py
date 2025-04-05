@@ -5,15 +5,12 @@ from typing import Optional
 from decimal import Decimal
 
 class TransactionBase(BaseModel):
-    user_id: int = Field(...)
-    amount: float = Field(..., gt=0)
-    transaction_type: str = Field(...)
-    status: str = Field(...)
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-class Transaction(TransactionBase):
-    pass 
-
+    buyer_id: UUID
+    seller_id: UUID
+    property_id: UUID
+    amount: Decimal  
+    
+#done    
 class TransactionCreate(TransactionBase):
     pass
 
@@ -25,7 +22,7 @@ class TransactionUpdate(BaseModel):
 class TransactionInDB(TransactionBase):
     id: int = Field(...)
 
-# success
+#done
 class TransactionResponse(BaseModel):
     id: UUID
     buyer_id: UUID
@@ -33,13 +30,7 @@ class TransactionResponse(BaseModel):
     property_id: UUID
     amount: Decimal
     created_at: datetime
-    updated_at: datetime
 
-class TransactionCreate(BaseModel):
-    buyer_id: UUID
-    seller_id: UUID
-    property_id: UUID
-    amount: condecimal(max_digits=15, decimal_places=2)
     
     class Config:
         from_attributes = True

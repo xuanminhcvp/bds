@@ -4,9 +4,9 @@ from typing import Any
 from sqlmodel import Session, select, update, delete 
 from backend.schemas.user import UserCreate, UserUpdate, UserSchema
 from backend.schemas.property import PropertyCreate, Property
-from backend.schemas.transaction import TransactionCreate, TransactionUpdate, Transaction
+from backend.schemas.transaction import TransactionCreate, TransactionUpdate
 from backend.schemas.review import ReviewCreate, Review
-from backend.app.models import User
+from backend.app.models import User, Transaction
 from backend.app.core.security import get_password_hash, verify_password 
 
 def create_user(*, session: Session, user_create: UserCreate) -> UserSchema:
@@ -40,13 +40,14 @@ def update_user(*, session: Session, db_user: UserSchema, user_in: UserUpdate) -
     session.refresh(db_user)
     return db_user
 
-def get_user_by_email(*, session: Session, email: str) -> UserSchema | None:
+async def get_user_by_email(*, session: Session, email: str) -> UserSchema | None:
     statement = select(User).where(User.email == email)
-    session_user = session.exec(statement).first()
+    result = await session.exec(statement)
+    session_user = result.scalars().first()
     return session_user
 
-def authenticate(*, session: Session, email: str, password: str) -> UserSchema | None:
-    db_user = get_user_by_email(session=session, email=email)
+async def authenticate(*, session: Session, email: str, password: str) -> UserSchema | None:
+    db_user = await get_user_by_email(session=session, email=email)
     if not db_user:
         return None
     if not verify_password(password, db_user.hashed_password):

@@ -1,35 +1,58 @@
 from fastapi import APIRouter, Depends, HTTPException
 from backend.app.services.payment_service import PaymentService
-from backend.schemas.payment import PaymentResponse, PaymentCreate, PaymentSchema
+from backend.schemas.payment import PaymentResponse, PaymentCreate, PaymentSchema, PaymentUpdate
 from sqlalchemy.orm import Session
 from backend.app.api.deps import SessionDep
 from typing import Any
+from uuid import UUID
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
+#done
 @router.post("/", response_model=PaymentResponse)
-def create_payment(session: SessionDep, payment_data: PaymentCreate):
-    try:
-        return PaymentService.create_payment(
-            session, payment_data.transaction_id, payment_data.amount, payment_data.payment_method, payment_data.payment_status
+async def create_payment(session: SessionDep, payment_data: PaymentCreate) -> PaymentResponse:
+    return await PaymentService.create_payment(session, payment_data)
+
+#done
+@router.get("/{transaction_id}", response_model=PaymentResponse)
+async def get_payment(session: SessionDep, transaction_id: UUID):
+    return await PaymentService.get_payment_by_transaction(session, transaction_id)
+
+#done 
+@router.patch("/{payment_id}", response_model=PaymentUpdate)
+async def update_payment(session: SessionDep, payment_id: UUID, payment_data: PaymentUpdate):
+    return await PaymentService.update_payment(session, payment_id, payment_data)
+
+#done
+@router.get("/", response_model=list[PaymentResponse])
+async def get_all_payments(session: SessionDep):
+    return await PaymentService.get_all_payments(session)
+
+#done
+@router.delete("/{payment_id}", response_model=PaymentResponse)
+async def delete_payment(session: SessionDep, payment_id: UUID):
+    return await PaymentService.delete_payment(session, payment_id)
+
+
+
+
+
+
+
+
+
+
+@router.get("/{payment_id}", response_model = PaymentResponse)
+async def get_payment_by_id(session: SessionDep, payment_id: int):
+    payment = await PaymentService.get_payment_by_id(session, payment_id)
+    if not payment:
+        raise HTTPException(
+            status_code=404,
+            detail="Payment not found"
         )
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Internal server error")
-    
-@router.patch("/{payment_id}", response_model= PaymentSchema)
-def update_payment_status(session: SessionDep, payment_id: int, new_payment: str):
-    return PaymentService.update_payment_status(session, payment_id, new_payment)
+    return payment
 
-@router.post("/process/{payment_id}")
-def process_payment(session: SessionDep, payment_id: int) -> Any:
-    return None
 
-@router.get("/payment_history/{user_id}")
-def get_payment_history(session: SessionDep, user_id: int) -> Any:
-    user_payment_history = PaymentService.get_payment_history(session, user_id)
-    return user_payment_history
 
 
 

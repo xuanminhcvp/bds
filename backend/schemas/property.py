@@ -2,40 +2,69 @@ from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID 
 from datetime import datetime
+from decimal import Decimal
 
 class PropertyBase(BaseModel):
-    title: str 
+    title: str
     description: Optional[str] = None
     price: float
-    location: str 
+    location: str
+    area: float
+    bedrooms: int
+    bathrooms: int
+    property_type: str
+    status: str
+    owner_id: UUID
+    is_verified: Optional[bool] = False 
 
-class PropertyResponse(PropertyBase):
-    id: UUID 
-    created_at: datetime
-    user_id: UUID 
+class PropertyCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    price: Decimal
+    location: str
+    area: Decimal
+    bedrooms: int
+    bathrooms: int
+    property_type: str
+    status: str
+    owner_id: UUID
+    is_verified: Optional[bool] = False
 
-
-
-
-
-
-
-
-
-
-
-
-
+class PropertyResponse(BaseModel):
+    id: UUID
+    title: str
+    description: str
+    price: Decimal
+    location: str
+    area: Decimal
+    bedrooms: int
+    bathrooms: int
+    property_type: str
+    status: str
+    owner_id: UUID
+    is_verified: bool
 
 class Property(PropertyBase):
     pass 
 
-class PropertyCreate(PropertyBase):
-    pass 
+class Property1(PropertyBase):
+    id: UUID
+    created_at: datetime
+    updated_at: datetime
 
-class PropertyUpdate(PropertyBase):
-    pass 
 
+class PropertyUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[Decimal] = None
+    location: Optional[str] = None
+    area: Optional[Decimal] = None
+    bedrooms: Optional[int] = None
+    bathrooms: Optional[int] = None
+    property_type: Optional[str] = None
+    status: Optional[str] = None
+    owner_id: Optional[UUID] = None
+    is_verified: Optional[bool] = None
 
 
 class PropertiesResponse(PropertyBase):

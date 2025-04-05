@@ -18,12 +18,12 @@ class User(Base):
     is_verified = Column(Boolean,default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     update_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
-    role_id = Column(Integer, ForeignKey("roles.id")) 
+    role_id = Column(Integer, ForeignKey("roles.id", ondelete="CASCADE"), nullable=False, default=2) 
 
-    role = relationship("Role", back_populates="users")
-    properties = relationship("Property", back_populates="owner")
-    wishlist = relationship("Wishlist", back_populates="user")
-    reviews = relationship("Review", back_populates="user")
+    role = relationship("Role", back_populates="users", passive_deletes=True)
+    properties = relationship("Property", back_populates="owner", passive_deletes=True)
+    wishlist = relationship("Wishlist", back_populates="user", passive_deletes=True)
+    reviews = relationship("Review", back_populates="user", passive_deletes=True)
 
 class Role(Base):
     __tablename__= "roles"
@@ -32,7 +32,7 @@ class Role(Base):
     name = Column(String, unique=True, nullable=False)
     is_admin = Column(Boolean, default=False)
 
-    users = relationship("User", back_populates="role")
+    users = relationship("User", back_populates="role", passive_deletes=True)
 
     
 

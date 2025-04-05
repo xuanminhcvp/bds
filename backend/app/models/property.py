@@ -18,14 +18,15 @@ class Property(Base):
     bathrooms = Column(Integer, nullable=False)
     property_type = Column(String, nullable=False)
     status = Column(String, nullable=False)
-    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
-    update_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
-    owner = relationship("User", back_populates="properties")
-    reviews = relationship("Review", back_populates="property")
-    wishlist = relationship("Wishlist", back_populates="property")
+    owner = relationship("User", back_populates="properties", passive_deletes=True)
+    wishlist = relationship("Wishlist", back_populates="property", passive_deletes=True)
+    reviews = relationship("Review", back_populates="property", passive_deletes=True)
 
-
+    def __str__(self):
+        return f"Property(id={self.id}, title={self.title}, description={self.description}, bedrooms={self.bedrooms}, bathrooms={self.bathrooms})"
 
