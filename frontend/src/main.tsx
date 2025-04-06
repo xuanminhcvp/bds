@@ -44,7 +44,6 @@ root.render(
     <BrowserRouter>
       <Header />
       <Routes>
-        <PropertyList />
         <Route path="/" element={<PropertyList />} />  
         <Route path="/search" element={<SearchBar />} />  
         <Route path="/pagination" element={<PaginationProperty />} />  
