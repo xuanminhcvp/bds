@@ -1,5 +1,5 @@
 import uuid 
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
 from sqlalchemy import Column, String, Integer, DECIMAL, ForeignKey, Boolean, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
@@ -19,6 +19,7 @@ class Property(Base):
     property_type = Column(String, nullable=False)
     status = Column(String, nullable=False)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    images = Column(ARRAY(String))
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))

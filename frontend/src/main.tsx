@@ -15,6 +15,26 @@ import CardList from "./charkaui/charkaui1.tsx"
 import ProductList from "./charkaui/charkaui2.tsx"
 import UserList from "./charkaui/charkaui3.tsx"
 import TaskDashboard from "./charkaui/charkaui4.tsx"
+import RealEstatePost from "./components/realestatepost.tsx"
+import AgentInfo from "./components/agentinfo.tsx"
+import AgentInfo2 from "./components/agentinfo2.tsx"
+import PropertyPerAddress from "./components/propertyperaddress.tsx"
+import FAQ from "./components/FAQ.tsx"
+import App from "./components/123.jsx"
+import PropertyCard2 from "./components/propertycard2.tsx"
+import Demo from "./somethingsmall/tabbds.tsx"
+import ForYou from "./components/foryou.tsx"
+import PropertyLocation from "./components/propertylocation.tsx"
+import TinTuc from "./components/tintuc.tsx"
+import ProductList2 from "./components/duan.tsx"
+import ImageWithTextBox from "./components/test123.tsx"
+import NhaDatBan from "./pages/nhadatban.tsx"
+import Nhadatchothue from "./pages/nhadatchothue.tsx"
+import NationalProjectsSection from "./pages/duanbds.tsx"
+
+
+
+
 
 
 const fakeProperty: Property = {
@@ -51,7 +71,31 @@ root.render(
         <Route path="/about" element={<About />} />  
         <Route path="/cards" element={<CardList />} />  
         <Route path="/products" element={<ProductList />} />  
-        <Route path="/users" element={<UserList />} />  
+        <Route path="/users" element={<UserList />} />
+        <Route path="/realestatepost" element={<RealEstatePost />} />    
+        <Route path="/agentinfo" element={<AgentInfo />} />    
+        <Route path="/agentinfo2" element={<AgentInfo2 />} />    
+        <Route path="/faq" element={<FAQ />} />    
+        <Route path="/app" element={<App />} />  
+        <Route path="/propertyperaddress" element={<PropertyPerAddress />} />
+        <Route path="/demo" element={<Demo />} /> 
+        <Route path="/propertycard2" element={<PropertyCard2 />} />
+        <Route path="/foryou" element={<ForYou />} />
+        <Route path="/propertylocation" element={<PropertyLocation />} />
+        <Route path="/tintuc" element={<TinTuc />} />
+        <Route path="/duan" element={<ProductList2 />} />
+        <Route path="/test123" element={<ImageWithTextBox />} />
+        <Route path="/nhadatban" element={<NhaDatBan />} />
+        <Route path="/nhadatchothue" element={<Nhadatchothue />} />
+        <Route path="/nationalprojectsection" element={<NationalProjectsSection />} />
+
+
+        
+
+
+
+ 
+  
         <Route path="*" element={<div>404 - Không tìm thấy trang</div>} />  
       </Routes>
       <Footer />

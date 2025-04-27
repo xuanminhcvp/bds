@@ -6,6 +6,8 @@ from backend.app.database import Base
 from alembic import context
 from backend.app.models import User, Role, Commission, ContactHistory, CrawledProperty, TransactionStatusEnum, Image, Payment, Property, Review, Transaction, Wishlist, Payment
 
+# print("Loading env.py...1.2.3")
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -20,6 +22,14 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
+print("Tables in Base.metadata:")
+for table in target_metadata.tables.values():
+    print(f"Table: {table.name}")
+    print("Columns:")
+    for column in table.columns:
+        print(f"  {column.name}: {column.type}")
+    print("---")
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

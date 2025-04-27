@@ -1,0 +1,95 @@
+import { createListCollection } from "@chakra-ui/react";
+import { FilterItem, LocationStat, Article, FAQ } from "../types/index.ts";
+
+export const locationStats: LocationStat[] = [
+  { location: "Hà Nội", count: 62335 },
+  { location: "Hồ Chí Minh", count: 61529 },
+  { location: "Đà Nẵng", count: 9830 },
+  { location: "Bình Dương", count: 8132 },
+  { location: "Khánh Hòa", count: 5245 },
+  { location: "Đồng Nai", count: 4474 },
+  { location: "Hải Phòng", count: 4171 },
+  { location: "Bà Rịa Vũng Tàu", count: 3401 },
+  { location: "Long An", count: 3208 },
+  { location: "Hưng Yên", count: 3009 },
+];
+
+export const priceRanges = createListCollection<FilterItem>({
+  items: [
+    { label: "1 - 2 tỷ", value: "1-2" },
+    { label: "2 - 3 tỷ", value: "2-3" },
+    { label: "3 - 5 tỷ", value: "3-5" },
+    { label: "5 - 7 tỷ", value: "5-7" },
+    { label: "7 - 10 tỷ", value: "7-10" },
+    { label: "10 - 20 tỷ", value: "10-20" },
+  ],
+});
+
+export const areas = createListCollection<FilterItem>({
+  items: [
+    { label: "Dưới 30 m²", value: "under-30" },
+    { label: "30 - 50 m²", value: "30-50" },
+    { label: "50 - 80 m²", value: "50-80" },
+    { label: "80 - 100 m²", value: "80-100" },
+    { label: "Trên 100 m²", value: "over-100" },
+  ],
+});
+
+export const featuredArticles: Article[] = [
+  { id: 1, title: "Bình Chánh Tỏa Sáng Trên Bản Đồ Phát Triển Đô Thị" },
+  { id: 2, title: "Vì Sao Thị Trường Bất Động Sản Đang Tăng Nhiệt?" },
+  { id: 3, title: "Đất Nền Hòa Lạc Nổi Sóng Đầu Năm 2025" },
+  { id: 4, title: "Nhà Ở Xã Hội Sẽ Bùng Nổ Năm 2025?" },
+  { id: 5, title: "5 Điểm Nóng Sốt Đất Trước Tình Sắp Nhập - Cơ Hội Hay Rủi Ro?" },
+];
+
+export const faqs: FAQ[] = [
+  {
+    id: 1,
+    question: "Hợp đồng thuê nhà đất có bắt buộc phải công chứng không?",
+    answer:
+      "Theo Luật Nhà ở 2014, hợp đồng thuê nhà không bắt buộc phải công chứng, trừ trường hợp thuê nhà ở xã hội hoặc thuê dài hạn trên 5 năm. Tuy nhiên, công chứng giúp đảm bảo tính pháp lý và tránh tranh chấp.",
+  },
+  {
+    id: 2,
+    question: "Người nước ngoài có được thuê nhà tại Việt Nam không?",
+    answer:
+      "Có, người nước ngoài được phép thuê nhà tại Việt Nam nếu có giấy tờ hợp pháp như visa, giấy phép lao động, hoặc thẻ tạm trú. Thời hạn thuê thường không vượt quá thời gian của giấy tờ lưu trú.",
+  },
+  {
+    id: 3,
+    question: "Có cần đăng ký tạm trú cho người thuê nhà không?",
+    answer:
+      "Có, theo Luật Cư trú 2020, người thuê nhà cần đăng ký tạm trú tại địa phương nơi sinh sống. Chủ nhà có trách nhiệm hỗ trợ người thuê làm thủ tục này trong vòng 30 ngày kể từ ngày đến ở.",
+  },
+  {
+    id: 4,
+    question: "Chủ nhà có phải đóng thuế khi cho thuê nhà không?",
+    answer:
+      "Có, chủ nhà phải nộp thuế thu nhập cá nhân và thuế môn bài nếu cho thuê nhà. Thuế thu nhập cá nhân được tính dựa trên doanh thu, với mức giảm trừ tùy theo quy định hiện hành (thường 10% doanh thu).",
+  },
+  {
+    id: 5,
+    question: "Khi xảy ra tranh chấp về hợp đồng thuê nhà, giải quyết như thế nào?",
+    answer:
+      "Khi xảy ra tranh chấp, hai bên nên thương lượng hòa giải trước. Nếu không đạt được thỏa thuận, có thể khởi kiện ra tòa án nhân dân có thẩm quyền tại địa phương nơi có bất động sản để giải quyết.",
+  },
+  {
+    id: 6,
+    question: "Người thuê nhà có quyền gì khi hợp đồng bị chấm dứt trước thời hạn?",
+    answer:
+      "Người thuê có quyền yêu cầu bồi thường thiệt hại nếu hợp đồng bị chấm dứt không đúng thỏa thuận. Ngoài ra, họ có thể được hoàn lại tiền thuê đã trả trước hoặc yêu cầu thời gian để tìm chỗ ở mới.",
+  },
+  {
+    id: 7,
+    question: "Có thể cho thuê nhà đang thế chấp ngân hàng không?",
+    answer:
+      "Có, nhưng cần có sự đồng ý của ngân hàng đang thế chấp. Theo Luật Dân sự, việc cho thuê tài sản thế chấp phải được ngân hàng chấp thuận bằng văn bản để tránh vi phạm hợp đồng thế chấp.",
+  },
+  {
+    id: 8,
+    question: "Quy định về mức phạt khi vi phạm hợp đồng thuê nhà là gì?",
+    answer:
+      "Mức phạt vi phạm hợp đồng thuê nhà do hai bên thỏa thuận trong hợp đồng, nhưng không được vượt quá 8% giá trị phần hợp đồng bị vi phạm theo Bộ luật Dân sự 2015. Ngoài ra, có thể áp dụng bồi thường thiệt hại.",
+  },
+];
