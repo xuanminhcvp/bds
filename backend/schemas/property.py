@@ -1,8 +1,14 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from uuid import UUID 
 from datetime import datetime
 from decimal import Decimal
+
+class UserInfo(BaseModel):
+    id: UUID
+    full_name: Optional[str]
+    avatar: Optional[str]
+    phone_number: str
 
 class PropertyBase(BaseModel):
     title: str
@@ -42,7 +48,15 @@ class PropertyResponse(BaseModel):
     property_type: str
     status: str
     owner_id: UUID
+    created_at: datetime
+    updated_at: datetime
     is_verified: bool
+    images: List[str] = []
+    owner: UserInfo
+
+class PropertyListResponse(BaseModel):
+    total: int
+    results: List[PropertyResponse]
 
 class Property(PropertyBase):
     pass 

@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from backend.app.database import Base
 from alembic import context
-from backend.app.models import User, Role, Commission, ContactHistory, CrawledProperty, TransactionStatusEnum, Image, Payment, Property, Review, Transaction, Wishlist, Payment
+from backend.app.models import User, Role, Commission, ContactHistory, CrawledProperty, TransactionStatusEnum, Image, Payment, Property, Review, Transaction, Wishlist, Payment, Duan
 
 # print("Loading env.py...1.2.3")
 

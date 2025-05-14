@@ -22,16 +22,25 @@ export const priceRanges = createListCollection<FilterItem>({
     { label: "5 - 7 tỷ", value: "5-7" },
     { label: "7 - 10 tỷ", value: "7-10" },
     { label: "10 - 20 tỷ", value: "10-20" },
+    { label: "20 - 30 tỷ", value: "20-30" },
+    { label: "30 - 40 tỷ", value: "30-40" },
+    { label: "40 - 60 tỷ", value: "40-60" },
+    { label: "Trên 60 tỷ", value: "60-" },
   ],
 });
 
 export const areas = createListCollection<FilterItem>({
   items: [
-    { label: "Dưới 30 m²", value: "under-30" },
+    { label: "Dưới 30 m²", value: "-30" },
     { label: "30 - 50 m²", value: "30-50" },
     { label: "50 - 80 m²", value: "50-80" },
     { label: "80 - 100 m²", value: "80-100" },
-    { label: "Trên 100 m²", value: "over-100" },
+    { label: "100 - 150 m²", value: "100-150" },
+    { label: "150 - 200 m²", value: "150-200" },
+    { label: "200 - 250 m²", value: "200-250" },
+    { label: "250 - 300 m²", value: "250-300" },
+    { label: "300 - 500 m²", value: "300-500" },
+    { label: "Trên 500 m²", value: "500-" },
   ],
 });
 

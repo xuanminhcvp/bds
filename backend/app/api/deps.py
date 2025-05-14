@@ -21,7 +21,9 @@ reusable_oauth2 = OAuth2PasswordBearer(
 )
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    print("DEBUG: Opening new session")
     async with AsyncSessionLocal() as session:
+        print("DEBUG: Session opened successfully")
         try:
             yield session
         finally:

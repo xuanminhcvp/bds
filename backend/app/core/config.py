@@ -61,7 +61,7 @@ class Settings(BaseSettings):
         return MultiHostUrl.build(
             scheme="postgresql+psycopg",
             username=self.POSTGRES_USER,
-            password=self.POSTGRES_PASSWORD,
+            password= 'huongthap1',
             host=self.POSTGRES_SERVER,
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
@@ -119,3 +119,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()  # type: ignore
+print(f"DEBUG: Resolved DATABASE_URL = {settings.SQLALCHEMY_DATABASE_URI}")

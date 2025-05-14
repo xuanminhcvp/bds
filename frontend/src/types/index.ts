@@ -1,14 +1,28 @@
 export interface Property {
-    id: number;
+    id: string;
     title: string;
-    price: string;
-    area: string;
-    beds: number;
-    baths: number;
-    location: string;
     description: string;
+    price: number;
+    location: string;
+    area: number;
+    bedrooms: number;
+    bathrooms: number;
+    property_type: string;
+    status: string;
+    owner_id: string;
+    created_at: string;
+    updated_at: string;
+    is_verified: boolean;
+    
     images: string[];
-}
+    owner: {
+      id: string;
+      full_name: string;
+      avatar?: string;
+      phone_number: string;
+    };
+  }
+  
   
 export interface FilterItem {
     label: string;

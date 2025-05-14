@@ -12,12 +12,10 @@ export interface Property {
     title: string;
     description: string;
     price: number;
-    images: string [];
     location: string;
-    contactInfo: {
-        name: string;
-        phone: string;
-        email: string;
-    };
+    area: number;
+    bedrooms: number;
+    bathrooms: number;
+    images: string[];
 }
 

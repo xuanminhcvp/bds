@@ -10,7 +10,7 @@ export default function FAQSection() {
   const displayedFAQs = isExpanded ? faqs : faqs.slice(0, initialDisplayCount);
 
   return (
-    <VStack align="start" gap={2} p={4} bg="gray.50" borderRadius="md" w="500px" mt={10}>
+    <VStack align="start" gap={2} p={4} bg="gray.50" borderRadius="md" mt={10}>
       <Text fontWeight="bold" fontSize="lg">Các câu hỏi thường gặp</Text>
       <Accordion.Root
         value={openFAQs}

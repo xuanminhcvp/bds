@@ -1,18 +1,37 @@
-import { VStack, Text, Select, Portal } from "@chakra-ui/react";
+import { VStack, Text, Select, Portal, Button } from "@chakra-ui/react";
 import { priceRanges, areas } from "../mocks/data.ts";
+import { useState, useEffect } from "react";
 import { FilterItem } from "../types/index.ts";
 
 interface SidebarFiltersProps {
+  filters: { priceRange?: string; areaRange?: string };
   onFilterChange: (filters: { priceRange?: string; areaRange?: string }) => void;
 }
 
-export default function SidebarFilters({ onFilterChange }: SidebarFiltersProps) {
+export default function SidebarFilters({ filters, onFilterChange }: SidebarFiltersProps) {
+  const [priceRange, setPriceRange] = useState<string>(filters.priceRange || "");
+  const [areaRange, setAreaRange] = useState<string>(filters.areaRange || "");
+
+  useEffect(() => {
+    setPriceRange(filters.priceRange || "");
+    setAreaRange(filters.areaRange || "");
+  }, [filters]);
+
+  const handleSubmit = () => {
+    onFilterChange({
+      ...filters, 
+      priceRange: priceRange || undefined, 
+      areaRange: areaRange || undefined, 
+    });
+  };
+
   return (
-    <VStack align="start" p={4} bg="gray.50" borderRadius="md" w="250px">
+    <VStack align="start" p={4} bg="gray.50" borderRadius="md" w="220px" gap={4}>
       <Text fontWeight="bold">Lọc theo giá</Text>
       <Select.Root
         collection={priceRanges}
-        onValueChange={(e) => onFilterChange({ priceRange: e.value[0] })}
+        onValueChange={(e) => setPriceRange(e.value[0] || "")}
+        value={priceRange ? [priceRange] : []}
       >
         <Select.HiddenSelect />
         <Select.Label>Chọn khoảng giá</Select.Label>
@@ -41,7 +60,8 @@ export default function SidebarFilters({ onFilterChange }: SidebarFiltersProps) 
       <Text fontWeight="bold">Lọc theo diện tích</Text>
       <Select.Root
         collection={areas}
-        onValueChange={(e) => onFilterChange({ areaRange: e.value[0] })}
+        onValueChange={(e) => setAreaRange(e.value[0] || "")}
+        value={areaRange ? [areaRange] : []}
       >
         <Select.HiddenSelect />
         <Select.Label>Chọn diện tích</Select.Label>
@@ -66,6 +86,10 @@ export default function SidebarFilters({ onFilterChange }: SidebarFiltersProps) 
           </Select.Positioner>
         </Portal>
       </Select.Root>
+
+      <Button colorScheme="teal" onClick={handleSubmit} w="full">
+        Áp dụng bộ lọc
+      </Button>
     </VStack>
   );
 }

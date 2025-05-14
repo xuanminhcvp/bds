@@ -7,12 +7,13 @@ from backend.schemas.user import UserSchema, UserCreate
 from backend.app.models import User 
 
 engine = create_async_engine(str(settings.SQLALCHEMY_DATABASE_URI))
-
+print("DEBUG: Engine created successfully")
 AsyncSessionLocal = sessionmaker(
     bind= engine,
     class_=AsyncSession,
     expire_on_commit=False
 )
+print("DEBUG: Session factory created successfully")
 
 async def init_db(session: AsyncSession) -> None:
     result = await session.execute(select(User).where(User.email == settings.FIRST_SUPERUSER))

@@ -1,68 +1,102 @@
-import { useState } from "react";
-import { Box, Text, Flex, Button, Link, useBreakpointValue } from "@chakra-ui/react";
-import { MdClose, MdOutlineMenu } from "react-icons/md";
+import React from 'react';
+import { 
+  Box, 
+  Flex, 
+  HStack, 
+  Text, 
+  Link,
+  Container,
+  Button
+} from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 
-const Header = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+// Define the navigation items with types
+interface NavItem {
+  label: string;
+  href: string;
+}
 
-    const display = useBreakpointValue({ base: "none", md: "flex"});
-    
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-    };
-
-    return (
-        <Box bg="teal.500" p={4} boxShadow="md">
-            <Flex justify={"space-between"} align={"center"} maxW={"1200px"} mx={"auto"}>
-                {/* Logo or title */}
-                <Text fontSize={"xl"} fontWeight={"bold"} color={"white"}>
-                    BDS.com
-                </Text>
-
-                {/* Menu di dong */}
-                <Box display={{base: "block", md: "none"}}>
-                    <Button color={"white"} onClick={toggleMenu}>
-                        {isMenuOpen ? <MdClose /> : <MdOutlineMenu />}
-                    </Button>
+const Header: React.FC = () => {
+  // Navigation items
+  const navItems: NavItem[] = [
+    { label: 'Nhà đất bán', href: '/nhadatban' },
+    { label: 'Nhà đất cho thuê', href: '/nhadatchothue' },
+    { label: 'Dự án', href: '/duan' },
+    { label: 'Tin tức', href: '/tintuc' },
+    { label: 'Wiki BDS', href: '/wikibds' },
+    { label: 'Phân tích đánh giá', href: '/phantichdanhgia' },
+    { label: 'Danh bạ', href: '/nhamoigioi' },
+  ];
+  
+  return (
+    <Box as="header" boxShadow="sm" py={3} borderBottomWidth="1px" borderColor="gray.200">
+      <Container maxW="container.xl">
+        <Flex justify="space-between" align="center">
+          {/* Logo */}
+          <Flex align="center">
+            <Link as={RouterLink} to="/">
+              <Flex align="center">
+                <Box ml={2}>
+                  <Text 
+                    fontSize="xl" 
+                    fontWeight="bold" 
+                    color="red.500"
+                    lineHeight="1.2"
+                  >
+                    Batdongsan
+                  </Text>
+                  <Text 
+                    fontSize="xs" 
+                    color="gray.600"
+                    lineHeight="1"
+                  >
+                    by PropertyGuru
+                  </Text>
                 </Box>
+              </Flex>
+            </Link>
+          </Flex>
 
-                {/* Menu cho man hinh lon */}
-                <Flex
-                    display={display}
-                    align={"center"}
-                    gap={4}
-                >
-                    <Link href="/" color={"white"} _hover={{ textDecoration: "underline" }}>
-                        Trang chu
-                    </Link>
-                    <Link href="/properties" color={"white"} _hover={{ textDecoration: "underline" }}>
-                        DS BDS
-                    </Link>
-                    <Link href="/about" color={"white"} _hover={{ textDecoration: "underline" }}>
-                        Gioi thieu
-                    </Link>
-                    <Button colorScheme={"teal"} variant={"solid"}>
-                        Dang Nhap
-                    </Button>
-                </Flex>
-            </Flex>
-            
-            {isMenuOpen && (
-                <Box display={{ base: "block", md: "none" }} mt={4} bg="teal.600" p={4} borderRadius="md">
-                <Link href="/" color="white" display="block" py={2} _hover={{ textDecoration: "underline" }}>
-                    Trang Chủ
-                </Link>
-                <Link href="/properties" color="white" display="block" py={2} _hover={{ textDecoration: "underline" }}>
-                    Danh Sách Bất Động Sản
-                </Link>
-                <Link href="/about" color="white" display="block" py={2} _hover={{ textDecoration: "underline" }}>
-                    Giới Thiệu
-                </Link>
-                </Box>
-            )}
-        </Box>
-    );
+          {/* Navigation */}
+          <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
+            {navItems.map((item, index) => (
+              <Link
+                key={index}
+                as={RouterLink}
+                to={item.href}
+                fontSize="md"
+                fontWeight="medium"
+                color="gray.700"
+                _hover={{ color: 'red.500', textDecoration: 'none' }}
+                _last={index === navItems.length - 1 ? { 
+                  borderBottom: '2px solid', 
+                  borderColor: 'red.500', 
+                  color: 'red.500',
+                  pb: 1 
+                } : {}}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </HStack>
+          <HStack gap={4}>
+              <Button colorScheme="teal" variant="outline">
+                Tải ứng dụng
+              </Button>
+              <Button colorScheme="teal" variant="outline">
+                Đăng nhập
+              </Button>
+              <Button colorScheme="teal" variant="solid">
+                Đăng ký
+              </Button>
+              <Button colorScheme="teal" variant="solid">
+                Đăng tin
+              </Button>
+            </HStack>
+        </Flex>
+      </Container>
+    </Box>
+  );
 };
 
 export default Header;
-

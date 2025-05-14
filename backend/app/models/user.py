@@ -15,6 +15,7 @@ class User(Base):
     full_name = Column(String, nullable=True)
     hashed_password = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
+    avatar = Column(String, nullable=True)
     is_verified = Column(Boolean,default=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     update_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
@@ -24,6 +25,7 @@ class User(Base):
     properties = relationship("Property", back_populates="owner", passive_deletes=True)
     wishlist = relationship("Wishlist", back_populates="user", passive_deletes=True)
     reviews = relationship("Review", back_populates="user", passive_deletes=True)
+
 
 class Role(Base):
     __tablename__= "roles"

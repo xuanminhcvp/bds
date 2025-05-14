@@ -5,12 +5,11 @@ import { ChakraProvider, defaultSystem  } from "@chakra-ui/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import PropertyList from "../src/components/PropertyList.tsx"; 
 import Header from "./components/Header.tsx"; 
-import Footer from "./components/footer.tsx";
+import Footer from "./pages/Footer.tsx";
 import SearchBar from "./components/SearchBar.tsx"; 
 import PaginationProperty from "./components/pagination.tsx"
 import { Property } from "./types.ts"
 import PropertyDetails from "./components/propertydetails.tsx"
-import About from "./components/aboutpage.tsx"
 import CardList from "./charkaui/charkaui1.tsx"
 import ProductList from "./charkaui/charkaui2.tsx"
 import UserList from "./charkaui/charkaui3.tsx"
@@ -22,15 +21,30 @@ import PropertyPerAddress from "./components/propertyperaddress.tsx"
 import FAQ from "./components/FAQ.tsx"
 import App from "./components/123.jsx"
 import PropertyCard2 from "./components/propertycard2.tsx"
-import Demo from "./somethingsmall/tabbds.tsx"
 import ForYou from "./components/foryou.tsx"
 import PropertyLocation from "./components/propertylocation.tsx"
 import TinTuc from "./components/tintuc.tsx"
-import ProductList2 from "./components/duan.tsx"
+import Duan from "./pages/duan.tsx"
 import ImageWithTextBox from "./components/test123.tsx"
 import NhaDatBan from "./pages/nhadatban.tsx"
-import Nhadatchothue from "./pages/nhadatchothue.tsx"
-import NationalProjectsSection from "./pages/duanbds.tsx"
+import NationalProjectsSection from "./pages/duan.tsx"
+import Nhadatchothue from "./pages/Nhadatchothue.tsx"
+import Tenbds from "./components/tenbds.tsx"
+import HomePage from "./pages/homepage.tsx";
+import AreaSelect from "./components/nhadatban/areaselect.tsx"
+import PriceRangeSelect from "./components/nhadatban/pricerangeselect.tsx"
+import SidebarFilters from "./components/nhadatban/sidebarfilters.tsx"
+import PropertyProject from "./pages/propertyproject.tsx"
+import WikiBds from "./pages/wikibds.tsx"
+import PhanTichDanhGia from "./pages/phantichdanhgia.tsx"
+import Nhamoigioi from "./pages/nhamoigioi.tsx"
+import LoginPage from "./components/signin/loginpage.tsx"
+import Dashboard from "./components/dashboard/dashboard.tsx"
+
+
+
+
+
 
 
 
@@ -64,11 +78,10 @@ root.render(
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<PropertyList />} />  
+        <Route path="/" element={<HomePage />} />  
         <Route path="/search" element={<SearchBar />} />  
         <Route path="/pagination" element={<PaginationProperty />} />  
         <Route path="/property/:id" element={<PropertyDetails property={fakeProperty} />} />  
-        <Route path="/about" element={<About />} />  
         <Route path="/cards" element={<CardList />} />  
         <Route path="/products" element={<ProductList />} />  
         <Route path="/users" element={<UserList />} />
@@ -78,16 +91,30 @@ root.render(
         <Route path="/faq" element={<FAQ />} />    
         <Route path="/app" element={<App />} />  
         <Route path="/propertyperaddress" element={<PropertyPerAddress />} />
-        <Route path="/demo" element={<Demo />} /> 
         <Route path="/propertycard2" element={<PropertyCard2 />} />
         <Route path="/foryou" element={<ForYou />} />
         <Route path="/propertylocation" element={<PropertyLocation />} />
         <Route path="/tintuc" element={<TinTuc />} />
-        <Route path="/duan" element={<ProductList2 />} />
+        <Route path="/duan" element={<Duan />} />
         <Route path="/test123" element={<ImageWithTextBox />} />
         <Route path="/nhadatban" element={<NhaDatBan />} />
         <Route path="/nhadatchothue" element={<Nhadatchothue />} />
         <Route path="/nationalprojectsection" element={<NationalProjectsSection />} />
+        <Route path="/tenbds" element={<Tenbds />} />
+        <Route path="/properties" element={<PropertyList />} />
+        <Route path="/areaselect" element={<AreaSelect />} />
+        <Route path="/pricerangeselect" element={<PriceRangeSelect />} />
+        <Route path="/sidebarfilters" element={<SidebarFilters />} />
+        <Route path="/propertyproject" element={<PropertyProject />} />
+        <Route path="/wikibds" element={<WikiBds />} />
+        <Route path="/phantichdanhgia" element={<PhanTichDanhGia />} />
+        <Route path="/nhamoigioi" element={<Nhamoigioi />} />
+        <Route path="/loginpage" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
+
+
+
 
 
         
