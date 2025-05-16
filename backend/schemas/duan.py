@@ -10,5 +10,9 @@ class DuanSchema(BaseModel):
     images: List[str]
     company: str
 
+class DuanResponse(BaseModel):
+    total: int
+    results: List[DuanSchema]
+
     class Config:
         from_attributes = True
