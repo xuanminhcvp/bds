@@ -1,4 +1,3 @@
-// PropertyCard.tsx
 import {
   Box,
   Image,

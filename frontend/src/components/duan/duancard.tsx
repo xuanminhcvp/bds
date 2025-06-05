@@ -30,8 +30,7 @@ const DuAnCard: React.FC<DuAnCardProps> = ({
   const largeImage = images[0];
   const thumbnails = images.slice(1, 3);
   return (
-    <Box>
-        
+    <Box>     
       <Box
         borderWidth="1px"
         borderRadius="sm"

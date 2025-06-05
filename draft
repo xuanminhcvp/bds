@@ -1,0 +1,157 @@
+project/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
+├── src/
+│   ├── assets/                     # Hình ảnh, font, file tĩnh
+│   │   ├── images/
+│   │   └── styles/
+│   ├── components/                 # Các component chung
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   └── Sidebar.jsx
+│   ├── pages/                      # Các page chính
+│   │   ├── public/                 # Giao diện website thông thường
+│   │   │   ├── Home.jsx
+│   │   │   └── About.jsx
+│   │   ├── user/                   # Giao diện dashboard user
+│   │   │   ├── UserDashboard.jsx
+│   │   │   └── Profile.jsx
+│   │   ├── admin/                  # Giao diện dashboard admin
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   └── ManageUsers.jsx
+│   ├── layouts/                    # Layout cho từng giao diện
+│   │   ├── PublicLayout.jsx
+│   │   ├── UserLayout.jsx
+│   │   └── AdminLayout.jsx
+│   ├── routes/                     # Quản lý route
+│   │   └── index.jsx
+│   ├── stores/                     # Quản lý Zustand stores
+│   │   ├── authStore.js           # Store cho xác thực
+│   │   ├── userStore.js           # Store cho dữ liệu user
+│   │   └── adminStore.js          # Store cho dữ liệu admin
+│   ├── hooks/                      # Custom hooks
+│   │   └── useAuth.js
+│   ├── utils/                      # Hàm tiện ích
+│   │   └── api.js
+│   ├── App.jsx                     # Component gốc
+│   ├── index.js                    # Entry point
+│   └── styles/                     # CSS/SCSS global
+│       ├── App.css
+│       └── reset.css
+├── .gitignore
+├── package.json
+└── README.md
+
+
+PublicLayout.jsx
+
+        import { Outlet } from 'react-router-dom';
+        import Header from '../components/Header';
+        import Footer from '../components/Footer';
+        import '../styles/App.css';
+
+        const PublicLayout = () => {
+        return (
+            <div className="public-layout">
+            <Header />
+            <main className="main-content">
+                <Outlet /> {/* Render các trang con như Home, About */}
+            </main>
+            <Footer />
+            </div>
+        );
+        };
+
+        export default PublicLayout;
+
+
+
+UserLayout.jsx
+        import { Outlet, Navigate } from 'react-router-dom';
+        import Sidebar from '../components/Sidebar';
+        import Header from '../components/Header';
+        import useAuthStore from '../stores/authStore';
+        import '../styles/App.css';
+
+        const UserLayout = () => {
+        const { isAuthenticated, user } = useAuthStore();
+
+        // Kiểm tra xác thực và vai trò
+        if (!isAuthenticated || user?.role !== 'user') {
+            return <Navigate to="/" />;
+        }
+
+        return (
+            <div className="user-layout">
+            <Header />
+            <div className="dashboard-container">
+                <Sidebar role="user" /> {/* Sidebar với menu cho user */}
+                <main className="dashboard-content">
+                <Outlet /> {/* Render các trang như UserDashboard, Profile */}
+                </main>
+            </div>
+            </div>
+        );
+        };
+
+        export default UserLayout;
+
+
+
+AdminLayout.jsx
+
+        import { Outlet, Navigate } from 'react-router-dom';
+        import Sidebar from '../components/Sidebar';
+        import Header from '../components/Header';
+        import useAuthStore from '../stores/authStore';
+        import '../styles/App.css';
+
+        const AdminLayout = () => {
+        const { isAuthenticated, user } = useAuthStore();
+
+        // Kiểm tra xác thực và vai trò
+        if (!isAuthenticated || user?.role !== 'admin') {
+            return <Navigate to="/" />;
+        }
+
+        return (
+            <div className="admin-layout">
+            <Header />
+            <div className="dashboard-container">
+                <Sidebar role="admin" /> {/* Sidebar với menu cho admin */}
+                <main className="dashboard-content">
+                <Outlet /> {/* Render các trang như AdminDashboard, ManageUsers */}
+                </main>
+            </div>
+            </div>
+        );
+        };
+
+        export default AdminLayout;
+
+routes/index.jsx:
+
+        import { Routes, Route } from 'react-router-dom';
+        import PublicLayout from '../layouts/PublicLayout';
+        import UserLayout from '../layouts/UserLayout';
+        import AdminLayout from '../layouts/AdminLayout';
+        import Home from '../pages/public/Home';
+        import UserDashboard from '../pages/user/UserDashboard';
+        import AdminDashboard from '../pages/admin/AdminDashboard';
+
+        const AppRoutes = () => (
+        <Routes>
+            <Route element={<PublicLayout />}>
+            <Route path="/" element={<Home />} />
+            </Route>
+            <Route element={<UserLayout />}>
+            <Route path="/user/dashboard" element={<UserDashboard />} />
+            </Route>
+            <Route element={<AdminLayout />}>
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            </Route>
+        </Routes>
+        );
+
+        export default AppRoutes;

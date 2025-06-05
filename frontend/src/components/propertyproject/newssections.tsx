@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Heading, Flex, Image, Text, Button, VStack } from '@chakra-ui/react';
 import { newsData } from './data';
 
-
 const NewsSection: React.FC = () => {
   return (
     <Box p={4} borderWidth="1px" borderRadius="lg" bg="white" boxShadow="sm">

@@ -11,10 +11,11 @@
     "chakra:add": "chakra-cli snippet add"
   },
   "dependencies": {
-    "@chakra-ui/icon": "^3.2.0",
-    "@chakra-ui/react": "^3.15.0",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/react": "^2.8.2",
+    "@choc-ui/paginator": "^3.4.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@tanstack/react-query": "^5.69.0",
     "@tanstack/react-query-devtools": "^5.69.0",
     "@tanstack/react-router": "^1.114.29",
@@ -24,7 +25,11 @@
     "framer-motion": "^12.6.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.6.0",
+    "react-slick": "^0.30.3",
+    "sonner": "^2.0.3",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -32,6 +37,7 @@
     "@playwright/test": "^1.51.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@types/react-slick": "^0.23.13",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.1.0",
@@ -39,6 +45,6 @@
     "globals": "^15.15.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
-    "vite": "^6.2.5"
+    "vite": "^5.2.0"
   }
 }

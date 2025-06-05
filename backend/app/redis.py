@@ -1,4 +1,0 @@
-import aioredis
-
-redis = None
-    

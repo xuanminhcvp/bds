@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
-import { Box, VStack, Grid, Container, Text, HStack, Pagination, ButtonGroup,
-  IconButton, } from "@chakra-ui/react";
+import { Box, VStack, Grid, Container, Text, HStack, ButtonGroup, IconButton } from "@chakra-ui/react";
 import DuAnCard from "../components/duan/duancard";
 import EvaluationCard from "../components/duan/evaluationcard.tsx";
 import NewsSection from "../components/duan/newssection.tsx";
@@ -32,6 +31,7 @@ export default function Duan() {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const limit = 10;
+  const totalPages = Math.ceil(total / limit); // Tính tổng số trang
 
   const fetchProperties = useCallback(async (page: number) => {
     try {
@@ -55,6 +55,36 @@ export default function Duan() {
     fetchProperties(page); 
   }, [page, fetchProperties]); 
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0 }); // Cuộn lên đầu trang
+  };
+
+  // Tạo danh sách các nút phân trang
+  const renderPageButtons = () => {
+    const buttons = [];
+    const siblingCount = 1;
+    const startPage = Math.max(1, page - siblingCount);
+    const endPage = Math.min(totalPages, page + siblingCount);
+
+    // Thêm các nút trang
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <IconButton
+          key={i}
+          variant={page === i ? "solid" : "ghost"}
+          colorScheme={page === i ? "blue" : "gray"}
+          onClick={() => handlePageChange(i)}
+          aria-label={`Page ${i}`}
+        >
+          {i}
+        </IconButton>
+      );
+    }
+
+    return buttons;
+  };
+
   if (loading) {
     return <Box p={4}>Loading...</Box>;
   }
@@ -63,7 +93,7 @@ export default function Duan() {
     return <Box p={4}>Error: {error}</Box>;
   }
 
-return (
+  return (
     <Box bg="gray.100" p={4}>
       <Container maxW="940px" p={0}>
         <Grid templateColumns="2fr 1fr" gap={3}>
@@ -98,42 +128,21 @@ return (
               ))}
             </VStack>
             <Box mt={6} display="flex" justifyContent="center" alignItems="center">
-              <Pagination.Root
-                count={total} // [PHÂN TRANG] Tổng số mục
-                pageSize={limit} // [PHÂN TRANG] Số mục mỗi trang
-                onPageChange={(e) => {
-                  setPage(e.page); // [PHÂN TRANG] Cập nhật trang hiện tại
-                  window.scrollTo({ top: 0 }); // [PHÂN TRANG] Cuộn lên đầu trang
-                }}
-                siblingCount={1}
-              >
-                <ButtonGroup variant="ghost" size="sm" gap={1}>
-                  <Pagination.PrevTrigger asChild>
-                    <IconButton 
-                      asChild
-                      aria-label="Trang trước"
-                    >
-                      <LuChevronLeft />
-                    </IconButton>
-                  </Pagination.PrevTrigger>
-
-                  <Pagination.Items
-                    render={(page) => (
-                      <IconButton variant={{ base: "ghost", _selected: "outline" }}>
-                        {page.value}
-                      </IconButton>
-                    )}
-                  />
-
-                  <Pagination.NextTrigger asChild>
-                    <IconButton 
-                      asChild
-                    >
-                      <LuChevronRight />
-                    </IconButton>
-                  </Pagination.NextTrigger>
-                </ButtonGroup>
-              </Pagination.Root>
+              <ButtonGroup variant="ghost" size="sm" gap={1}>
+                <IconButton
+                  aria-label="Trang trước"
+                  icon={<LuChevronLeft />}
+                  onClick={() => handlePageChange(page - 1)}
+                  isDisabled={page === 1}
+                />
+                {renderPageButtons()}
+                <IconButton
+                  aria-label="Trang sau"
+                  icon={<LuChevronRight />}
+                  onClick={() => handlePageChange(page + 1)}
+                  isDisabled={page === totalPages}
+                />
+              </ButtonGroup>
             </Box>
           </Box>
           <Box>

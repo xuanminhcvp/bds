@@ -1,4 +1,4 @@
-import { Box, Text, Heading, SimpleGrid, HStack, Image, Spacer, Flex } from "@chakra-ui/react";
+import { Box, Text, Heading, SimpleGrid, HStack, Image, Flex } from "@chakra-ui/react";
 
 const TinTuc = () => {
     return (

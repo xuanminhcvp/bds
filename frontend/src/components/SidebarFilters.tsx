@@ -1,93 +1,62 @@
-import { VStack, Text, Select, Portal, Button } from "@chakra-ui/react";
+import { VStack, Text, Select, Button } from "@chakra-ui/react";
 import { priceRanges, areas } from "../mocks/data.ts";
-import { useState, useEffect } from "react";
 import { FilterItem } from "../types/index.ts";
+import useRealEstateStore from "../stores"; 
 
-interface SidebarFiltersProps {
-  filters: { priceRange?: string; areaRange?: string };
-  onFilterChange: (filters: { priceRange?: string; areaRange?: string }) => void;
-}
+export default function SidebarFilters() {
+  const { searchFilters, setSearchFilters } = useRealEstateStore();
 
-export default function SidebarFilters({ filters, onFilterChange }: SidebarFiltersProps) {
-  const [priceRange, setPriceRange] = useState<string>(filters.priceRange || "");
-  const [areaRange, setAreaRange] = useState<string>(filters.areaRange || "");
+  const handlePriceChange = (value: string) => {
+    const [min, max] = value ? value.split("-").map(Number) : [0, Infinity];
+    setSearchFilters({ minPrice: min, maxPrice: max });
+  };
 
-  useEffect(() => {
-    setPriceRange(filters.priceRange || "");
-    setAreaRange(filters.areaRange || "");
-  }, [filters]);
-
-  const handleSubmit = () => {
-    onFilterChange({
-      ...filters, 
-      priceRange: priceRange || undefined, 
-      areaRange: areaRange || undefined, 
-    });
+  const handleAreaChange = (value: string) => {
+    const [min, max] = value ? value.split("-").map(Number) : [0, Infinity];
+    setSearchFilters({ minArea: min, maxArea: max });
   };
 
   return (
     <VStack align="start" p={4} bg="gray.50" borderRadius="md" w="220px" gap={4}>
       <Text fontWeight="bold">Lọc theo giá</Text>
-      <Select.Root
-        collection={priceRanges}
-        onValueChange={(e) => setPriceRange(e.value[0] || "")}
-        value={priceRange ? [priceRange] : []}
+      <Select
+        placeholder="Chọn khoảng giá"
+        value={
+          searchFilters.minPrice || searchFilters.maxPrice
+            ? `${searchFilters.minPrice || 0}-${searchFilters.maxPrice === Infinity ? '' : searchFilters.maxPrice}`
+            : ""
+        }
+        onChange={(e) => handlePriceChange(e.target.value)}
       >
-        <Select.HiddenSelect />
-        <Select.Label>Chọn khoảng giá</Select.Label>
-        <Select.Control>
-          <Select.Trigger>
-            <Select.ValueText placeholder="Chọn khoảng giá" />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {priceRanges.items.map((priceRange: FilterItem) => (
-                <Select.Item item={priceRange} key={priceRange.value}>
-                  {priceRange.label}
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>
+        {priceRanges.map((priceRange: FilterItem) => (
+          <option key={priceRange.value} value={priceRange.value}>
+            {priceRange.label}
+          </option>
+        ))}
+      </Select>
 
       <Text fontWeight="bold">Lọc theo diện tích</Text>
-      <Select.Root
-        collection={areas}
-        onValueChange={(e) => setAreaRange(e.value[0] || "")}
-        value={areaRange ? [areaRange] : []}
+      <Select
+        placeholder="Chọn diện tích"
+        value={
+          searchFilters.minArea || searchFilters.maxArea
+            ? `${searchFilters.minArea || 0}-${searchFilters.maxArea === Infinity ? '' : searchFilters.maxArea}`
+            : ""
+        }
+        onChange={(e) => handleAreaChange(e.target.value)}
       >
-        <Select.HiddenSelect />
-        <Select.Label>Chọn diện tích</Select.Label>
-        <Select.Control>
-          <Select.Trigger>
-            <Select.ValueText placeholder="Chọn diện tích" />
-          </Select.Trigger>
-          <Select.IndicatorGroup>
-            <Select.Indicator />
-          </Select.IndicatorGroup>
-        </Select.Control>
-        <Portal>
-          <Select.Positioner>
-            <Select.Content>
-              {areas.items.map((area: FilterItem) => (
-                <Select.Item item={area} key={area.value}>
-                  {area.label}
-                  <Select.ItemIndicator />
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select.Positioner>
-        </Portal>
-      </Select.Root>
+        {areas.map((area: FilterItem) => (
+          <option key={area.value} value={area.value}>
+            {area.label}
+          </option>
+        ))}
+      </Select>
 
-      <Button colorScheme="teal" onClick={handleSubmit} w="full">
+      <Button
+        colorScheme="teal"
+        onClick={() => setSearchFilters({ ...searchFilters })}
+        w="full"
+      >
         Áp dụng bộ lọc
       </Button>
     </VStack>

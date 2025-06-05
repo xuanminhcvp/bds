@@ -1,7 +1,7 @@
 import { Box, Image, Text, Icon, HStack, Avatar, Spacer } from "@chakra-ui/react";
-import { FaBed, FaBath  } from "react-icons/fa";
+import { FaBed, FaBath } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
-import { Property } from "../types/index.ts";
+import { Property } from "../stores/type/PropertyType.ts";
 import PhoneReveal from "../components/nhadatban/phonereveal.tsx";
 
 interface PropertyCardProps {
@@ -21,16 +21,15 @@ const formatPrice = (price: string | number): string => {
   return priceStr; 
 };
 
-
 export default function PropertyCard({ property }: PropertyCardProps) {
+  const baseURL = "http://localhost:8000"
+  const imagePathFromDB = property.images[0].image_url
+  const fullImageURL = `${baseURL}${imagePathFromDB}`
+
   return (
     <Box borderWidth="1px" borderRadius="lg" bg="white" boxShadow="sm" w="660px">
       <Image
-        src={
-          property.images && property.images.length > 0
-            ? property.images[0]
-            : "https://images.unsplash.com/photo-1745428847642-34364849140e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwzfHx8ZW58MHx8fHx8"
-        }
+        src={fullImageURL}
         alt={property.title}
         borderRadius="lg"
         objectFit="cover"
@@ -41,34 +40,35 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       <Box p={4}>
         <Text fontWeight="bold" fontSize="md">{property.title}</Text>
         <HStack mt={2}>
-        <Text color="red.500" fontWeight="bold" fontSize="lg">{formatPrice(property.price)} tỷ</Text>
-        <Text>·</Text>
-        <Text>{property.area}m²</Text>
-        <Text>·</Text>
-        <Icon as={FaBed} />
-        <Text>{property.bedrooms}</Text>
-        <Text>·</Text>
-        <Icon as={FaBath} />
-        <Text>{property.bathrooms}</Text>
-        <Icon as={MdLocationOn} />
-        <Text fontSize="sm">{property.location}</Text>
+          <Text color="red.500" fontWeight="bold" fontSize="lg">{property.price.toLocaleString("vi-VN")} đ</Text>
+          <Text>·</Text>
+          <Text>{property.area}m²</Text>
+          <Text>·</Text>
+          <Icon as={FaBed} />
+          <Text>{property.bedrooms}</Text>
+          <Text>·</Text>
+          <Icon as={FaBath} />
+          <Text>{property.bathrooms}</Text>
+          <Icon as={MdLocationOn} />
+          <Text fontSize="sm">{property.address}</Text>
         </HStack>
         <Text fontSize="sm" mt={2} color="gray.700">{property.description}</Text>
         <HStack gap={3} mb={3}>
-          <Avatar.Root size="sm">
-            <Avatar.Fallback name={property.owner.full_name} />
-            <Avatar.Image src={property.owner.avatar || undefined} />
-          </Avatar.Root>
+          <Avatar
+            size="sm"
+            name={property.user.name}
+            src={`${baseURL}${property.user.avatar}` || undefined}
+          />
           <Box>
-          <Text fontSize="sm" fontWeight="medium">
-            {property.owner.full_name}
-          </Text>
+            <Text fontSize="sm" fontWeight="medium">
+              {property.user.name}
+            </Text>
             <Text fontSize="xs" color="gray.500">
-            Posted on {new Date(property.created_at).toLocaleDateString("vi-VN")}
-          </Text>
+              Posted on {new Date(property.updated_at).toLocaleDateString("vi-VN")}
+            </Text>
           </Box>
           <Spacer />
-          <PhoneReveal phoneNumber={property.owner.phone_number} />
+          <PhoneReveal phoneNumber={property.user.phone} />
         </HStack>
       </Box>
     </Box>

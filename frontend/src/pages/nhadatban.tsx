@@ -1,132 +1,131 @@
-"use client";
-
 import {
   Flex,
   Box,
   Grid,
   Text,
   Container,
-  ButtonGroup,
+  HStack,
+  Button,
   IconButton,
 } from "@chakra-ui/react";
-import {
-  LuChevronLeft,
-  LuChevronRight,
-} from "react-icons/lu";
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import SidebarFilters from "../components/SidebarFilters.tsx";
-import PropertyStats from "../components/PropertyStats.tsx";
-import { Property } from "../types/index.ts";
-import { featuredArticles } from "../mocks/data.ts";
+import PropertyStats from "../components/nhadatban/propertystats.tsx";
+import { Property } from "../stores/type/PropertyType.ts";
 import PropertyCard from "../components/PropertyCard.tsx";
-
-// Pagination mới
-import { Pagination } from "@chakra-ui/react";
+import useRealEstateStore from "../stores"; 
 
 export default function Nhadatban() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<{ priceRange?: string; areaRange?: string }>({});
+  const { property, isLoadingProperty, errorProperty, fetchProperty, searchFilters } = useRealEstateStore();
   const [page, setPage] = useState<number>(1);
-  const [totalItems, setTotalItems] = useState<number>(1);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const limit = 10;
+  const totalItems = filteredProperties.length;
+  const totalPages = Math.ceil(totalItems / limit);
 
-  const fetchData = useCallback(
-    async (page: number) => {
-      try {
-        const params = {
-          price_range: filters.priceRange,
-          area_range: filters.areaRange,
-          limit: limit,
-          offset: (page - 1) * limit,
-        };
-        const response = await axios.get("http://127.0.0.1:8000/api/v1/properties/", { params });
-
-        const totalItems = response.data.total;
-        setTotalItems(totalItems);
-
-        setProperties(response.data.results || response.data);
-        setError(null);
-      } catch (err) {
-        console.error("Lỗi khi lấy dữ liệu", err);
-        setError("Không thể tải dữ liệu bất động sản. Vui lòng thử lại sau.");
-        setTotalItems(1);
+  // Lọc dữ liệu dựa trên bộ lọc từ SearchSlice
+  useEffect(() => {
+    const applyFilters = () => {
+      let result = [...property];
+      if (searchFilters.minPrice || searchFilters.maxPrice) {
+        result = result.filter(
+          (item) =>
+            item.price >= (searchFilters.minPrice || 0) &&
+            (searchFilters.maxPrice === Infinity || searchFilters.maxPrice === 0
+              ? true
+              : item.price <= searchFilters.maxPrice)
+        );
       }
-    },
-    [filters, limit]
+      if (searchFilters.minArea || searchFilters.maxArea) {
+        result = result.filter(
+          (item) =>
+            item.area >= (searchFilters.minArea || 0) &&
+            (searchFilters.maxArea === Infinity || searchFilters.maxArea === 0
+              ? true
+              : item.area <= searchFilters.maxArea)
+        );
+      }
+      setFilteredProperties(result);
+    };
+    applyFilters();
+  }, [property, searchFilters]);
+
+  // Gọi fetchProperty khi component mount
+  useEffect(() => {
+    fetchProperty();
+    setPage(1);
+  }, []);
+
+  // Phân trang
+  const paginatedProperties = filteredProperties.slice(
+    (page - 1) * limit,
+    page * limit
   );
 
-  useEffect(() => {
-    setPage(1);
-    fetchData(1);
-  }, [filters, fetchData]);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0 });
+  };
 
-  useEffect(() => {
-    fetchData(page);
-  }, [page, fetchData]);
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const pagesToShow = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    return (
+      <HStack spacing={2} justify="center" mt={6} flexWrap="wrap">
+        <IconButton
+          icon={<ChevronLeftIcon />}
+          aria-label="Trang trước"
+          onClick={() => handlePageChange(page - 1)}
+          isDisabled={page === 1}
+        />
+        {pagesToShow.map((p) => (
+          <Button
+            key={p}
+            onClick={() => handlePageChange(p)}
+            colorScheme={p === page ? "blue" : "gray"}
+            size="sm"
+          >
+            {p}
+          </Button>
+        ))}
+        <IconButton
+          icon={<ChevronRightIcon />}
+          aria-label="Trang sau"
+          onClick={() => handlePageChange(page + 1)}
+          isDisabled={page === totalPages}
+        />
+      </HStack>
+    );
+  };
 
   return (
     <Box bg="gray.100" minH="100vh">
       <Container maxW="940px" p={0}>
         <Flex p={6} gap={6} direction={{ base: "column", md: "row" }}>
-          <Flex direction="column" gap={6}>
-            <Grid templateColumns="1fr" gap={6} flex="3">
-              {error ? (
-                <Text color="red.500">{error}</Text>
-              ) : properties.length > 0 ? (
-                properties.map((property) => (
-                  <PropertyCard key={property.id} property={property} />
+          <Flex direction="column" gap={6} flex="1">
+            <Grid templateColumns="1fr" gap={6}>
+              {isLoadingProperty ? (
+                <Text>Đang tải dữ liệu...</Text>
+              ) : errorProperty ? (
+                <Text color="red.500">{errorProperty}</Text>
+              ) : paginatedProperties.length > 0 ? (
+                paginatedProperties.map((property) => (
+                  <PropertyCard key={property.property_id} property={property} />
                 ))
               ) : (
                 <Text>Không có bất động sản nào phù hợp.</Text>
               )}
             </Grid>
 
-            {/* Pagination mới */}
-            <Box mt={6} display="flex" justifyContent="center" alignItems="center">
-              <Pagination.Root
-                count={totalItems}
-                pageSize={10}
-                onPageChange={(e) => {
-                  setPage(e.page);
-                  window.scrollTo({ top: 0 }); 
-                }}
-                siblingCount={1}
-              >
-                <ButtonGroup variant="ghost" size="sm" gap={1}>
-                  <Pagination.PrevTrigger asChild>
-                    <IconButton 
-                      asChild
-                      aria-label="Trang trước"
-                    >
-                      <LuChevronLeft />
-                    </IconButton>
-                  </Pagination.PrevTrigger>
-
-                  <Pagination.Items
-                    render={(page) => (
-                      <IconButton variant={{ base: "ghost", _selected: "outline" }}>
-                        {page.value}
-                      </IconButton>
-                    )}
-                  />
-
-                  <Pagination.NextTrigger asChild>
-                    <IconButton 
-                      asChild
-                    >
-                      <LuChevronRight />
-                    </IconButton>
-                  </Pagination.NextTrigger>
-                </ButtonGroup>
-              </Pagination.Root>
-            </Box>
+            {/* Custom Pagination */}
+            {renderPagination()}
           </Flex>
-
           <Flex direction="column" gap={6} flex="1" maxW={{ md: "220px" }}>
-            <SidebarFilters filters={filters} onFilterChange={setFilters} />
-            <PropertyStats featuredArticles={featuredArticles} />
+              <SidebarFilters />
+              <PropertyStats />
           </Flex>
         </Flex>
       </Container>

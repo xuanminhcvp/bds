@@ -1,5 +1,3 @@
-import { createListCollection } from '@chakra-ui/react';
-
 export interface Property {
   id: number;
   title: string;
@@ -105,30 +103,26 @@ export const properties: Property[] = [
   },
 ];
 
-export const priceRanges = createListCollection({
-  items: [
-    { label: "1 - 2 tỷ", value: "1-2" },
-    { label: "2 - 3 tỷ", value: "2-3" },
-    { label: "3 - 5 tỷ", value: "3-5" },
-    { label: "5 - 7 tỷ", value: "5-7" },
-    { label: "7 - 10 tỷ", value: "7-10" },
-    { label: "10 - 20 tỷ", value: "10-20" },
-    { label: "20 - 30 tỷ", value: "20-30" },
-    { label: "30 - 40 tỷ", value: "30-40" },
-    { label: "40 - 60 tỷ", value: "40-60" },
-    { label: "Trên 60 tỷ", value: "60-" },
-  ],
-});
+export const priceRanges = [
+  { label: "1 - 2 tỷ", value: "1-2" },
+  { label: "2 - 3 tỷ", value: "2-3" },
+  { label: "3 - 5 tỷ", value: "3-5" },
+  { label: "5 - 7 tỷ", value: "5-7" },
+  { label: "7 - 10 tỷ", value: "7-10" },
+  { label: "10 - 20 tỷ", value: "10-20" },
+  { label: "20 - 30 tỷ", value: "20-30" },
+  { label: "30 - 40 tỷ", value: "30-40" },
+  { label: "40 - 60 tỷ", value: "40-60" },
+  { label: "Trên 60 tỷ", value: "60-" },
+];
 
-export const areas = createListCollection({
-  items: [
-    { label: "Dưới 30 m²", value: "under-30" },
-    { label: "30 - 50 m²", value: "30-50" },
-    { label: "50 - 80 m²", value: "50-80" },
-    { label: "80 - 100 m²", value: "80-100" },
-    { label: "Trên 100 m²", value: "over-100" },
-  ],
-});
+export const areas = [
+  { label: "Dưới 30 m²", value: "under-30" },
+  { label: "30 - 50 m²", value: "30-50" },
+  { label: "50 - 80 m²", value: "50-80" },
+  { label: "80 - 100 m²", value: "80-100" },
+  { label: "Trên 100 m²", value: "over-100" },
+];
 
 export const featuredArticles: Article[] = [
   { id: 1, title: "Bình Chánh Tỏa Sáng Trên Bản Đồ Phát Triển Đô Thị" },

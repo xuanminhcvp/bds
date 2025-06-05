@@ -6,24 +6,17 @@ import {
   Grid,
   Text,
   Container,
-  ButtonGroup,
+  HStack,
+  Button,
   IconButton,
 } from "@chakra-ui/react";
-import {
-  LuChevronLeft,
-  LuChevronRight,
-} from "react-icons/lu";
-import FAQSection from "../components/FAQSection.tsx";
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import SidebarFilters from "../components/SidebarFilters.tsx";
-import PropertyStats from "../components/PropertyStats.tsx";
+import PropertyStats from "../components/nhadatban/propertystats.tsx";
 import { Property } from "../types/index.ts";
-import { featuredArticles } from "../mocks/data.ts";
 import PropertyCard from "../components/PropertyCard.tsx";
-
-// Pagination mới
-import { Pagination } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 
 export default function Nhadatban() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -32,6 +25,7 @@ export default function Nhadatban() {
   const [page, setPage] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(1);
   const limit = 10;
+  const totalPages = Math.ceil(totalItems / limit);
 
   const fetchData = useCallback(
     async (page: number) => {
@@ -44,9 +38,7 @@ export default function Nhadatban() {
         };
         const response = await axios.get("http://127.0.0.1:8000/api/v1/properties/", { params });
 
-        const totalItems = response.data.total;
-        setTotalItems(totalItems);
-
+        setTotalItems(response.data.total || 1);
         setProperties(response.data.results || response.data);
         setError(null);
       } catch (err) {
@@ -67,12 +59,50 @@ export default function Nhadatban() {
     fetchData(page);
   }, [page, fetchData]);
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0 });
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const pagesToShow = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    return (
+      <HStack spacing={2} justify="center" mt={6} flexWrap="wrap">
+        <IconButton
+          icon={<ChevronLeftIcon />}
+          aria-label="Trang trước"
+          onClick={() => handlePageChange(page - 1)}
+          isDisabled={page === 1}
+        />
+        {pagesToShow.map((p) => (
+          <Button
+            key={p}
+            onClick={() => handlePageChange(p)}
+            colorScheme={p === page ? "blue" : "gray"}
+            size="sm"
+          >
+            {p}
+          </Button>
+        ))}
+        <IconButton
+          icon={<ChevronRightIcon />}
+          aria-label="Trang sau"
+          onClick={() => handlePageChange(page + 1)}
+          isDisabled={page === totalPages}
+        />
+      </HStack>
+    );
+  };
+
   return (
     <Box bg="gray.100" minH="100vh">
       <Container maxW="940px" p={0}>
         <Flex p={6} gap={6} direction={{ base: "column", md: "row" }}>
-          <Flex direction="column" gap={6}>
-            <Grid templateColumns="1fr" gap={6} flex="3">
+          <Flex direction="column" gap={6} flex="1">
+            <Grid templateColumns="1fr" gap={6}>
               {error ? (
                 <Text color="red.500">{error}</Text>
               ) : properties.length > 0 ? (
@@ -84,52 +114,13 @@ export default function Nhadatban() {
               )}
             </Grid>
 
-            {/* Pagination mới */}
-            <Box mt={6} display="flex" justifyContent="center" alignItems="center">
-              <Pagination.Root
-                count={totalItems}
-                pageSize={10}
-                onPageChange={(e) => {
-                  setPage(e.page);
-                  window.scrollTo({ top: 0 }); 
-                }}
-                siblingCount={1}
-              >
-                <ButtonGroup variant="ghost" size="sm" gap={1}>
-                  <Pagination.PrevTrigger asChild>
-                    <IconButton 
-                      asChild
-                      aria-label="Trang trước"
-                    >
-                      <LuChevronLeft />
-                    </IconButton>
-                  </Pagination.PrevTrigger>
-
-                  <Pagination.Items
-                    render={(page) => (
-                      <IconButton variant={{ base: "ghost", _selected: "outline" }}>
-                        {page.value}
-                      </IconButton>
-                    )}
-                  />
-
-                  <Pagination.NextTrigger asChild>
-                    <IconButton 
-                      asChild
-                    >
-                      <LuChevronRight />
-                    </IconButton>
-                  </Pagination.NextTrigger>
-                </ButtonGroup>
-              </Pagination.Root>
-              
-            </Box>
-            <FAQSection />
+            {/* Custom Pagination */}
+            {renderPagination()}
           </Flex>
 
           <Flex direction="column" gap={6} flex="1" maxW={{ md: "220px" }}>
             <SidebarFilters filters={filters} onFilterChange={setFilters} />
-            <PropertyStats featuredArticles={featuredArticles} />
+            <PropertyStats />
           </Flex>
         </Flex>
       </Container>

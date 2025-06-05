@@ -1,29 +1,5 @@
 {
-  "name": "bds",
-  "version": "1.0.0",
-  "main": "src/index.tsx",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "react-scripts start"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@chakra-ui/icons": "^2.2.4",
-    "@types/react": "^19.0.10",
-    "axios": "^1.9.0",
-    "lucide-react": "^0.486.0",
-    "openapi-typescript": "^7.6.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.5.0",
-    "react-slick": "^0.30.3",
-    "slick-carousel": "^1.8.1"
-  },
-  "devDependencies": {
-    "@chakra-ui/cli": "^3.15.0",
-    "@types/react-slick": "^0.23.13"
+    "lodash": "^4.17.21"
   }
 }

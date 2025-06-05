@@ -9,64 +9,77 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from pydantic import ValidationError, BaseModel
 from backend.app.core import security
 from backend.app.core.config import settings
 from backend.app.core.db import AsyncSessionLocal
-from backend.app.models import User 
-from backend.schemas.user import UserSchema
-from backend.schemas.token import Token, TokenPayload
+from backend.app.model import User 
+from backend.app.schemas.user import UserSchema, UserPublic
+from backend.app.schemas.token import Token, TokenPayload
+from sqlalchemy import select
+from typing import Optional
+
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
 )
+TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
+# Database session
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    print("DEBUG: Opening new session")
     async with AsyncSessionLocal() as session:
-        print("DEBUG: Session opened successfully")
         try:
             yield session
         finally:
             await session.close()
-
 SessionDep = Annotated[AsyncSession, Depends(get_db)]
-TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
-async def get_current_user(session: SessionDep, token: TokenDep) -> User:
+# Token payload model
+class TokenPayload(BaseModel):
+    sub: Optional[str] = None
+    exp: Optional[int] = None
+    iat: Optional[int] = None
+    nbf: Optional[int] = None
+
+    class Config:
+        extra = "allow"  
+
+# Get current user
+async def get_current_user(session: SessionDep, token: TokenDep) -> UserPublic:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
         payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        token_data = TokenPayload(**payload)
-        print(f"DEBUG - Raw Token Payload: {token_data}")
+        user_id: str = payload.get("sub")
+        if user_id is None:
+            raise credentials_exception
+    except InvalidTokenError as e:
+        raise credentials_exception
         
-    except (InvalidTokenError, ValidationError):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
-        
-        
+    except ValidationError as e:
+        raise credentials_exception
     try:
-        print(f"DEBUG - token_data.sub: {token_data.sub}")
-        
-        if isinstance(token_data.sub, int):
-            user_id = token_data.sub  
-        else:
-            user_id = uuid.UUID(token_data.sub)
-        
+        user_id_uuid = UUID(user_id)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid user ID format")
     
-    
-    user = await session.execute(select(User).where(User.id == user_id))  
+    user = await session.execute(select(User).where(User.id == user_id_uuid))
     user = user.scalars().first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    
+    user_public = UserPublic(
+        id=str(user.id),
+        email=user.email,
+        name=user.name
+    )
+    return user_public
 
-
-CurrentUser = Annotated[User, Depends(get_current_user)]
+CurrentUser = Annotated[UserPublic, Depends(get_current_user)]
 
 async def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
     if not current_user.is_superuser:

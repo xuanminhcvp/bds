@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+"""from fastapi import APIRouter, Depends, HTTPException
 from backend.app.services.payment_service import PaymentService
 from backend.schemas.payment import PaymentResponse, PaymentCreate, PaymentSchema, PaymentUpdate
 from sqlalchemy.orm import Session
@@ -50,7 +50,7 @@ async def get_payment_by_id(session: SessionDep, payment_id: int):
             status_code=404,
             detail="Payment not found"
         )
-    return payment
+    return payment"""
 
 
 

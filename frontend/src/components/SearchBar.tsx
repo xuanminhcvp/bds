@@ -1,79 +1,51 @@
-import { Portal, Select, createListCollection, Input, Button, Flex } from "@chakra-ui/react";
+import { Input, Button, Flex, Select } from "@chakra-ui/react";
 
-const propertyTypes = createListCollection ({
-    items: [
-        { lable: "Nha", value: "house" },
-        { lable: "Can ho", value: "apartment" },
-        { lable: "Dat", value: "land" },
-    ],
-})
+const propertyTypes = [
+    { label: "Nha", value: "house" },
+    { label: "Can ho", value: "apartment" },
+    { label: "Dat", value: "land" },
+];
 
-const locations = createListCollection({
-    items: [
-        { lable: "Ha Noi", value: "hanoi" },
-        { lable: "TP.HCM", value: "hochiminh" },
-    ],
-})
+const locations = [
+    { label: "Ha Noi", value: "hanoi" },
+    { label: "TP.HCM", value: "hochiminh" },
+];
 
 function SearchBar() {
     return (
-        <Flex direction={"column"} align={"center"} my={8}>
-            <Input placeholder="Tim kiem bat dong san" mb={4} width={"400px"} />
+        <Flex direction="column" align="center" my={8}>
+            <Input placeholder="Tim kiem bat dong san" mb={4} width="400px" />
 
-            <Flex width={"400px"} justify="space-between">
+            <Flex width="400px" justify="space-between">
                 {/* Property Type Select */}
-                <Select.Root collection={propertyTypes} width={"48%"} size={"sm"}>
-                    <Select.HiddenSelect />
-                    <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText placeholder="Chon loai bat dong san" />
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                            <Select.Indicator />
-                        </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Portal>
-                        <Select.Positioner>
-                            <Select.Content>
-                                {propertyTypes.items.map((type) => (
-                                    <Select.Item item={type} key={type.value}>
-                                        {type.lable}
-                                        <Select.ItemIndicator />
-                                    </Select.Item>
-                                ))}
-                            </Select.Content>
-                        </Select.Positioner>
-                    </Portal>
-                </Select.Root>
+                <Select
+                    placeholder="Chon loai bat dong san"
+                    width="48%"
+                    size="sm"
+                >
+                    {propertyTypes.map((type) => (
+                        <option key={type.value} value={type.value}>
+                            {type.label}
+                        </option>
+                    ))}
+                </Select>
                 {/* Location Select */}
-                <Select.Root collection={locations} width={"48"} size={"sm"}>
-                    <Select.HiddenSelect />
-                    <Select.Control>
-                        <Select.Trigger>
-                            <Select.ValueText placeholder="Chon khu vuc" />
-                        </Select.Trigger>
-                        <Select.IndicatorGroup>
-                            <Select.Indicator />
-                        </Select.IndicatorGroup>
-                    </Select.Control>
-                    <Portal>
-                        <Select.Positioner>
-                            <Select.Content>
-                                {locations.items.map((location) => (
-                                    <Select.Item item={location} key={location.value}>
-                                        {location.lable}
-                                        <Select.ItemIndicator />
-                                    </Select.Item>
-                                ))}
-                            </Select.Content>
-                        </Select.Positioner>
-                    </Portal>
-                </Select.Root>              
+                <Select
+                    placeholder="Chon khu vuc"
+                    width="48%"
+                    size="sm"
+                >
+                    {locations.map((location) => (
+                        <option key={location.value} value={location.value}>
+                            {location.label}
+                        </option>
+                    ))}
+                </Select>              
             </Flex>
 
-            <Button colorScheme={"blue"} mt={4} width={"400px"}>Tim kiem</Button>
+            <Button colorScheme="blue" mt={4} width="400px">Tim kiem</Button>
         </Flex>
-    )
+    );
 }
 
-export default SearchBar
+export default SearchBar;

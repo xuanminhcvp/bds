@@ -7,7 +7,11 @@ import {
   VStack,
   HStack,
   Tabs,
-  Button
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Button,
 } from '@chakra-ui/react';
 
 interface NewsItem {
@@ -164,37 +168,45 @@ const NewsHighlight = ({ newsItems }: { newsItems: NewsItem[] }) => {
       </VStack>
     </Flex>
   );
-}
+};
 
 const NewsTabs = () => {
   return (
-    <Tabs.Root defaultValue="tinnoibat">
+    <Tabs defaultIndex={0}> {/* Sửa từ defaultValue thành defaultIndex */}
       <Flex justify="space-between" align="center" mb={4}>
-        <Tabs.List>
-          <Tabs.Trigger value="tinnoibat">Tin nổi bật</Tabs.Trigger>
-          <Tabs.Trigger value="tintuc">Tin tức</Tabs.Trigger>
-          <Tabs.Trigger value="tphcm">BDS TPHCM</Tabs.Trigger>
-          <Tabs.Trigger value="hn">BDS Hà Nội</Tabs.Trigger>
-        </Tabs.List>
-        <Button colorScheme="red" size="sm" >
-            <a href="#" onClick={(e) => e.preventDefault()}>
-              Xem thêm →
-            </a> 
+        <TabList>
+          <Tab>Tin nổi bật</Tab>
+          <Tab>Tin tức</Tab>
+          <Tab>BDS TPHCM</Tab>
+          <Tab>BDS Hà Nội</Tab>
+        </TabList>
+        <Button 
+          as="a" 
+          href="#" 
+          onClick={(e) => e.preventDefault()}
+          colorScheme="red" 
+          size="sm"
+        >
+          Xem thêm →
         </Button>
       </Flex>
-      <Tabs.Content value="tinnoibat">
+      
+      {/* Thêm TabPanels wrapper */}
+      <TabPanels>
+        <TabPanel>
           <NewsHighlight newsItems={newsTinNoiBat} />
-      </Tabs.Content>
-      <Tabs.Content value="tintuc">
+        </TabPanel>
+        <TabPanel>
           <NewsHighlight newsItems={newsTinTuc} />
-      </Tabs.Content>
-      <Tabs.Content value="tphcm">
+        </TabPanel>
+        <TabPanel>
           <NewsHighlight newsItems={newsBDS_TPHCM} />
-      </Tabs.Content>
-      <Tabs.Content value="hn">
+        </TabPanel>
+        <TabPanel>
           <NewsHighlight newsItems={newsBDS_HaNoi} />
-      </Tabs.Content>
-    </Tabs.Root>
+        </TabPanel>
+      </TabPanels>
+    </Tabs>
   );
 };
 

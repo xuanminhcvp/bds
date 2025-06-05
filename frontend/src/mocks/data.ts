@@ -1,4 +1,3 @@
-import { createListCollection } from "@chakra-ui/react";
 import { FilterItem, LocationStat, Article, FAQ } from "../types/index.ts";
 
 export const locationStats: LocationStat[] = [
@@ -14,35 +13,31 @@ export const locationStats: LocationStat[] = [
   { location: "Hưng Yên", count: 3009 },
 ];
 
-export const priceRanges = createListCollection<FilterItem>({
-  items: [
-    { label: "1 - 2 tỷ", value: "1-2" },
-    { label: "2 - 3 tỷ", value: "2-3" },
-    { label: "3 - 5 tỷ", value: "3-5" },
-    { label: "5 - 7 tỷ", value: "5-7" },
-    { label: "7 - 10 tỷ", value: "7-10" },
-    { label: "10 - 20 tỷ", value: "10-20" },
-    { label: "20 - 30 tỷ", value: "20-30" },
-    { label: "30 - 40 tỷ", value: "30-40" },
-    { label: "40 - 60 tỷ", value: "40-60" },
-    { label: "Trên 60 tỷ", value: "60-" },
-  ],
-});
+export const priceRanges: FilterItem[] = [
+  { label: "1 - 2 tỷ", value: "1-2" },
+  { label: "2 - 3 tỷ", value: "2-3" },
+  { label: "3 - 5 tỷ", value: "3-5" },
+  { label: "5 - 7 tỷ", value: "5-7" },
+  { label: "7 - 10 tỷ", value: "7-10" },
+  { label: "10 - 20 tỷ", value: "10-20" },
+  { label: "20 - 30 tỷ", value: "20-30" },
+  { label: "30 - 40 tỷ", value: "30-40" },
+  { label: "40 - 60 tỷ", value: "40-60" },
+  { label: "Trên 60 tỷ", value: "60-" },
+];
 
-export const areas = createListCollection<FilterItem>({
-  items: [
-    { label: "Dưới 30 m²", value: "-30" },
-    { label: "30 - 50 m²", value: "30-50" },
-    { label: "50 - 80 m²", value: "50-80" },
-    { label: "80 - 100 m²", value: "80-100" },
-    { label: "100 - 150 m²", value: "100-150" },
-    { label: "150 - 200 m²", value: "150-200" },
-    { label: "200 - 250 m²", value: "200-250" },
-    { label: "250 - 300 m²", value: "250-300" },
-    { label: "300 - 500 m²", value: "300-500" },
-    { label: "Trên 500 m²", value: "500-" },
-  ],
-});
+export const areas: FilterItem[] = [
+  { label: "Dưới 30 m²", value: "-30" },
+  { label: "30 - 50 m²", value: "30-50" },
+  { label: "50 - 80 m²", value: "50-80" },
+  { label: "80 - 100 m²", value: "80-100" },
+  { label: "100 - 150 m²", value: "100-150" },
+  { label: "150 - 200 m²", value: "150-200" },
+  { label: "200 - 250 m²", value: "200-250" },
+  { label: "250 - 300 m²", value: "250-300" },
+  { label: "300 - 500 m²", value: "300-500" },
+  { label: "Trên 500 m²", value: "500-" },
+];
 
 export const featuredArticles: Article[] = [
   { id: 1, title: "Bình Chánh Tỏa Sáng Trên Bản Đồ Phát Triển Đô Thị" },

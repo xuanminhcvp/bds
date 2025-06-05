@@ -1,4 +1,4 @@
-from typing import Any
+"""from typing import Any
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -22,9 +22,7 @@ class PrivateUserCreate(BaseModel):
 
 @router.post("/users/", response_model=UserPublic)
 def create_user(user_in: PrivateUserCreate, session: SessionDep) -> Any:
-    """
-    Create a new user.
-    """
+
 
     user = UserSchema(
         email=user_in.email,
@@ -35,4 +33,4 @@ def create_user(user_in: PrivateUserCreate, session: SessionDep) -> Any:
     session.add(user)
     session.commit()
 
-    return user
+    return user"""

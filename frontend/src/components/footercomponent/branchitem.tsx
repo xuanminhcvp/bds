@@ -1,15 +1,16 @@
-import { Flex, VStack, Text, Collapsible } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Flex, VStack, Text, Collapse, Button } from '@chakra-ui/react';
 
 interface BranchItemProps {
-    city: string;
-    address: string;
-    hotline: string;
-  }
+  city: string;
+  address: string;
+  hotline: string;
+}
 
 // Component cho mỗi chi nhánh
 const BranchItem = ({ city, address, hotline }: BranchItemProps) => {
   return (
-    <VStack align="start" gap={1} flexBasis={{ base: '100%', md: '30%' }} px={2}>      
+    <VStack align="start" gap={1} flexBasis={{ base: '100%', md: '30%' }} px={2}>
       <Text fontWeight="bold">{city}</Text>
       <Text fontSize="sm">{address}</Text>
       <Text fontSize="sm">Hotline: {hotline}</Text>
@@ -19,6 +20,8 @@ const BranchItem = ({ city, address, hotline }: BranchItemProps) => {
 
 // Component chính cho phần chi nhánh
 const BranchesSection = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
   const branches = [
     {
       city: "Chi nhánh TP. Hồ Chí Minh",
@@ -52,18 +55,21 @@ const BranchesSection = () => {
     },
   ];
 
-  return (      
-    <Collapsible.Root defaultOpen={true}>
-      <Collapsible.Trigger>
-          <Text fontWeight="bold" fontSize="md" cursor="pointer"
-          >
-            --- Xem chi nhánh của Batdongsan.com.vn
-          </Text>
-      </Collapsible.Trigger>
-      <Collapsible.Content>
+  return (
+    <div>
+      <Button
+        variant="link"
+        onClick={() => setIsOpen(!isOpen)}
+        fontWeight="bold"
+        fontSize="md"
+        colorScheme="black"
+      >
+        --- Xem chi nhánh của Batdongsan.com.vn
+      </Button>
+      <Collapse in={isOpen}>
         <Flex
           direction="row"
-          flexWrap="wrap"          
+          flexWrap="wrap"
           gap={6}
           justify="space-between"
           py={2}
@@ -77,8 +83,8 @@ const BranchesSection = () => {
             />
           ))}
         </Flex>
-      </Collapsible.Content>
-    </Collapsible.Root>
+      </Collapse>
+    </div>
   );
 };
 

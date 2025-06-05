@@ -1,4 +1,4 @@
-from uuid import UUID
+"""from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.api.deps import SessionDep
@@ -62,4 +62,4 @@ async def complete_transaction(session: SessionDep, transaction_id: int):
 
 
 
-    
+    """

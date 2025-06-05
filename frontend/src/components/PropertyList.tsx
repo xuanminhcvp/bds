@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Spinner, Text, List, Button, Alert, Flex, Grid, HStack, VStack, Heading, Badge, SimpleGrid } from "@chakra-ui/react";
+import { Box, Spinner, Text, Button, Alert, AlertIcon, AlertDescription, Flex, SimpleGrid, VStack, Heading, Badge } from "@chakra-ui/react";
 
 type Property = {
     id: string; 
@@ -19,10 +19,9 @@ type Property = {
     updated_at: string;
 };
 
-const PropertyCard: React.FC<Property> = ({ title, description, price, location, area, bedrooms, bathrooms, property_type, owner_id }) => {
+const PropertyCard: React.FC<Property> = ({ title, description, price, location, area, bedrooms, bathrooms, property_type, status, owner_id, is_verified, created_at, updated_at }) => {
     return (
         <Box>
-            
             <Box 
                 w="full"
                 p={4}
@@ -41,10 +40,15 @@ const PropertyCard: React.FC<Property> = ({ title, description, price, location,
                     <Text>Bathrooms: {bathrooms}</Text>
                     <Text>Type: {property_type}</Text>
                     <Text>Owner ID: {owner_id}</Text>
+                    {/* Hiển thị thêm các thuộc tính nếu cần */}
+                    <Text>Status: {status}</Text>
+                    <Text>Verified: {is_verified ? "Yes" : "No"}</Text>
+                    <Text>Created: {new Date(created_at).toLocaleDateString("vi-VN")}</Text>
+                    <Text>Updated: {new Date(updated_at).toLocaleDateString("vi-VN")}</Text>
                 </VStack>
             </Box>
         </Box>
-    )
+    );
 };
 
 const PropertyList = () => {
@@ -53,13 +57,11 @@ const PropertyList = () => {
     const [error, setError] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
     const propertiesPerPage = 9;
-    const maxPageButtons = 5;
-
 
     useEffect(() => {
         const fetchProperties = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/api/v1/properties")
+                const response = await axios.get("http://127.0.0.1:8000/api/v1/properties");
                 setProperties(response.data);
             } 
             catch (err: unknown) {
@@ -80,9 +82,9 @@ const PropertyList = () => {
     const indexOfLastProperty = currentPage * propertiesPerPage;
     const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
     const currentProperties = properties.slice(indexOfFirstProperty, indexOfLastProperty);
-    const totalPages = Math.ceil(properties.length / propertiesPerPage)
+    const totalPages = Math.ceil(properties.length / propertiesPerPage);
 
-    const hanldePageChange = (page: number) => {
+    const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
         }
@@ -90,30 +92,29 @@ const PropertyList = () => {
 
     if (loading) return <Spinner size="xl" />;
     if (error) return (
-        <Alert.Root status="info" title="error">
-            <Alert.Indicator />
-            <Alert.Title>Have a error: {error}</Alert.Title>
-        </Alert.Root>
+        <Alert status="error">
+            <AlertIcon />
+            <AlertDescription>Have a error: {error}</AlertDescription>
+        </Alert>
     );
-
-
 
     return (
         <Box>
             <Box height={"500px"}>
-                    Day la phan form tim kiem
+                Day la phan form tim kiem
             </Box>
             <Box padding="5" boxShadow="md" borderRadius="lg">
                 <Text fontSize="2xl" fontWeight="bold" mb={4}>Danh sach BDS</Text>
                 <SimpleGrid
-                        columns={{ base: 1, md: 2, lg: 3 }} // Responsive: 1 cột trên mobile, 2 trên medium, 3 trên large
-                        gap={6} // Khoảng cách giữa các card
-                        maxW="1200px"
-                        mx="auto" // Căn giữa
-                        >
+                    columns={{ base: 1, md: 2, lg: 3 }}
+                    gap={6}
+                    maxW="1200px"
+                    mx="auto"
+                >
                     {currentProperties.map((property) => (
                         <PropertyCard
                             key={property.id}
+                            id={property.id}
                             title={property.title}
                             description={property.description}
                             price={property.price}
@@ -122,16 +123,19 @@ const PropertyList = () => {
                             bedrooms={property.bedrooms}
                             bathrooms={property.bathrooms}
                             property_type={property.property_type}
+                            status={property.status}
                             owner_id={property.owner_id}
+                            is_verified={property.is_verified}
+                            created_at={property.created_at}
+                            updated_at={property.updated_at}
                         />
                     ))}
                 </SimpleGrid>
                 
-                {/* Nut phan trang */}
                 {totalPages > 1 && (
-                    <Flex justify={"center"} mt={"6"} gap={"2"}>
+                    <Flex justify="center" mt="6" gap="2">
                         <Button
-                            onClick={() => hanldePageChange(currentPage - 1)}
+                            onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
                         >
                             Previous
@@ -139,14 +143,14 @@ const PropertyList = () => {
                         {Array.from({ length: totalPages }, (_, index) => (
                             <Button
                                 key={index + 1}
-                                onClick={() => hanldePageChange(index + 1)}
+                                onClick={() => handlePageChange(index + 1)}
                                 colorScheme={currentPage === index + 1 ? "blue" : "gray"}
                             >
                                 {index + 1}
                             </Button>
                         ))}
                         <Button 
-                            onClick={() => hanldePageChange(currentPage + 1)}
+                            onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
                         >
                             Next
