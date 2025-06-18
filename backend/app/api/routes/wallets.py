@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from backend.app.api.deps import SessionDep, CurrentUser
 from sqlalchemy import select
 from backend.app.model import Wallet
-from backend.app.schemas.wallets import WalletResponse, DepositRequest
+from backend.app.schemas.wallets import WalletResponse, DepositRequest, PaymentRequest
 
 router = APIRouter(prefix="/wallets", tags=["wallets"])
 
@@ -29,6 +29,27 @@ async def deposit(session: SessionDep, current_user: CurrentUser, deposit: Depos
     result = await session.execute(stmt)
     wallet = result.scalars().first()
     wallet.balance += deposit.amount
+    session.add(wallet)
+    await session.commit()
+    await session.refresh(wallet)
+    return wallet
+
+@router.post("/payment", response_model=WalletResponse)
+async def payment(session: SessionDep, current_user: CurrentUser, payment: PaymentRequest):
+    if payment.amount <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Số tiền phải lớn hơn 0"
+        )
+    stmt = select(Wallet).where(Wallet.user_id == current_user.id)  
+    result = await session.execute(stmt)
+    wallet = result.scalars().first()
+    if not wallet or wallet.balance < payment.amount:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Insufficient balance"
+        )
+    wallet.balance -= payment.amount
     session.add(wallet)
     await session.commit()
     await session.refresh(wallet)

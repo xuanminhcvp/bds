@@ -1,110 +1,60 @@
-"""from fastapi import APIRouter, HTTPException, Depends, Form, UploadFile, File
+from fastapi import APIRouter, HTTPException, Depends, Form, UploadFile, File
 from fastapi.responses import JSONResponse
 from typing import List, Optional
 from backend.app.api.deps import SessionDep, CurrentUser
-from backend.schemas.post import PostCreate, PostResponse, PostCreationResponse
-from backend.app.services.post_service import PostService
-from backend.app.model.property import PropertyType, PostImage
+from backend.app.schemas.post import PostCreate, PostResponse
+from backend.app.model.post import Post
 import logging
 import os
 from uuid import UUID
 from datetime import datetime
+import uuid
+from sqlalchemy.future import select
+from unidecode import unidecode
+import re
 
-router = APIRouter(prefix="/posts", tags=["posts"])
+router = APIRouter(prefix="/post", tags=["post"])
 logging.basicConfig(level=logging.DEBUG)
 
-UPLOAD_DIR = "uploads"
-if not os.path.exists(UPLOAD_DIR):
-    os.makedirs(UPLOAD_DIR)
-
-async def validate_post_input(post_data: PostCreate, user: CurrentUser):
-    if not post_data.title or len(post_data.title.strip()) < 5:
-        raise HTTPException(status_code=400, detail="Tiêu đề phải có ít nhất 5 ký tự.")
-    if post_data.price is not None and post_data.price <= 0:
-        raise HTTPException(status_code=400, detail="Giá phải lớn hơn 0.")
-    if post_data.area is not None and post_data.area <= 0:
-        raise HTTPException(status_code=400, detail="Diện tích phải lớn hơn 0.")
-    if post_data.address and len(post_data.address.strip()) < 10:
-        raise HTTPException(status_code=400, detail="Địa chỉ phải có ít nhất 10 ký tự.")
-    if not post_data.owner_id:
-        post_data.owner_id = user.id
-
-async def process_post_creation(session: SessionDep, post_data: PostCreate, user_id: UUID, images: List[UploadFile] = []):
-    from uuid import uuid4
-    post_data = post_data.model_copy(update={"owner_id": user_id})
-    new_post = await PostService.create_post(session, post_data)
-
-    # Xử lý upload hình ảnh
-    image_urls = []
-    for image in images:
-        file_extension = os.path.splitext(image.filename)[1]
-        unique_filename = f"{uuid4()}{file_extension}"
-        file_path = os.path.join(UPLOAD_DIR, unique_filename)
-        with open(file_path, "wb") as buffer:
-            buffer.write(await image.read())
-        image_url = f"/uploads/{unique_filename}"
-        image_urls.append(image_url)
-
-        # Lưu vào bảng post_images
-        new_image = PostImage(
-            image_id=uuid4(),
-            post_id=new_post.post_id,
-            image_url=image_url,
-            created_at=datetime.now()
-        )
-        session.add(new_image)
-
-    await session.commit()
-    return new_post, image_urls
-
-async def handle_post_response(session: SessionDep, post_data: PostCreate, user: CurrentUser, images: List[UploadFile] = []):
-
-    try:
-        await validate_post_input(post_data, user)
-        new_post, image_urls = await process_post_creation(session, post_data, user.id, images)
-
-        print("DEBUG - new_post data:", new_post.__dict__)  
-        print("DEBUG - image_urls data:", image_urls)
-        post_response = PostResponse.model_validate(new_post)
-        post_response.images = image_urls
-        
-        # Tạo PostCreationResponse
-        response = PostCreationResponse(
-            message="Tin đăng đã được gửi để duyệt.",
-            data=post_response,
-            image_urls=image_urls
-        )
-        return response
-    
-
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        logging.error(f"Error creating post: {str(e)}")
-        raise HTTPException(status_code=500, detail="Đã xảy ra lỗi khi tạo tin đăng.")
-
-@router.post("/", response_model=PostCreationResponse)
+@router.post("/", response_model=PostResponse)
 async def create_post(
+    post: PostCreate,
     session: SessionDep,
-    user: CurrentUser,
-    title: str = Form(...),
-    description: Optional[str] = Form(None),
-    price: float = Form(...),
-    area: float = Form(...),
-    address: str = Form(...),
-    property_type: PropertyType = Form(...),
-    category: str = Form(...),
-    images: List[UploadFile] = File([]),
+    current_user: CurrentUser,
 ):
-
-
-    post_data = PostCreate(
-        title=title,
-        description=description,
-        price=price,
-        area=area,
-        address=address,
-        property_type=property_type,
-        category=category,
+    user_id = current_user.id
+    slug = unidecode(post.title.lower().replace(" ", "-").replace("?", "")).replace("?", "") + "-" + str(uuid.uuid4())[:6]    
+    new_post = Post(
+        title=post.title,
+        slug=slug,
+        content=post.content,
+        category=post.category,
+        user_id=user_id,
+        image_url=post.image_url,
+        tags=post.tags
     )
-    return await handle_post_response(session, post_data, user, images)"""
+    session.add(new_post)
+    await session.commit()
+    await session.refresh(new_post)
+    return new_post
+
+@router.get("/{slug}", response_model=PostResponse)
+async def get_post(
+    slug: str,
+    session: SessionDep,
+):
+    stmt = select(Post).where(Post.slug == slug)
+    result = await session.execute(stmt)
+    post = result.scalars().first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+@router.get("/", response_model=List[PostResponse])
+async def get_posts(
+    session: SessionDep,
+):
+    stmt = select(Post).order_by(Post.published_at.desc())
+    result = await session.execute(stmt)
+    posts = result.scalars().all()
+    return posts

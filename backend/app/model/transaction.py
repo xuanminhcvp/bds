@@ -9,9 +9,12 @@ class Transaction(Base):
     transaction_id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
     property_id = Column(Integer, ForeignKey("property.property_id", ondelete="CASCADE"), nullable=True)
+    project_id = Column(Integer, ForeignKey("project.project_id", ondelete="CASCADE"), nullable=True)
     transaction_type = Column(String, nullable=False)
     amount = Column(Float, nullable=False)
+    description = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     user = relationship("User", back_populates="transaction")
     property = relationship("Property", back_populates="transaction")
+    project = relationship("Project", back_populates="transaction")

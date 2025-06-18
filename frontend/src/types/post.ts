@@ -1,27 +1,20 @@
-// src/types/post.ts
-import { PostStatus } from "../constants/postStatus";
-
-export interface Post {
-  id: number;
+export interface PostCreate {
   title: string;
   content: string;
-  status: PostStatus;
-  authorId?: number;
-  categoryId?: number;
-  createdAt: string;
-  updatedAt: string;
+  category: string | null; 
+  image_url: string[];
+  tags?: string[];
 }
 
-export interface PostFilter {
-  status?: PostStatus;
-  keyword?: string;
-  categoryId?: number;
-  dateRange?: { start: string; end: string };
-}
-
-export interface PostPagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
+export interface PostResponse {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  category: string | null;
+  user_id: string; 
+  published_at: string; 
+  updated_at: string; 
+  image_url?: string[]; 
+  tags?: string[]; 
 }

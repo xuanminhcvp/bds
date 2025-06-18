@@ -4,6 +4,9 @@ from .transaction import Transaction
 from .project import Project
 from .wallet import Wallet
 from .notification import Notification
+from .post import Post
+from .newsletter_subscribers import NewsletterSubscriber
+from .favorite import Favorite
 
 __all__ = [
     "User",
@@ -12,7 +15,10 @@ __all__ = [
     "Transaction",
     "Project",
     "Wallet",
-    "Notification"
+    "Notification",
+    "Post",
+    "NewsletterSubscriber",
+    "Favorite",
 ]
 
 

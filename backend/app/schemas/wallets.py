@@ -12,4 +12,8 @@ class WalletResponse(BaseModel):
 class DepositRequest(BaseModel):
     amount: float
 
+class PaymentRequest(BaseModel):
+    amount: float
+
+
 

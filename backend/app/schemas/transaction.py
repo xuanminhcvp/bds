@@ -4,36 +4,24 @@ from datetime import datetime
 from typing import Optional
 from decimal import Decimal
 
-class TransactionBase(BaseModel):
-    buyer_id: UUID
-    seller_id: UUID
-    property_id: UUID
-    amount: Decimal  
+class TransactionCreate(BaseModel):
+    property_id: Optional[int] = None
+    transaction_type: str
+    amount: float
     
-#done    
-class TransactionCreate(TransactionBase):
-    pass
+class Message(BaseModel):
+    message: str
 
-class TransactionUpdate(BaseModel):
-    amount: Optional[float]
-    transaction_type: Optional[str]
-    status: Optional[str]
-
-class TransactionInDB(TransactionBase):
-    id: int = Field(...)
-
-#done
 class TransactionResponse(BaseModel):
-    id: UUID
-    buyer_id: UUID
-    seller_id: UUID
-    property_id: UUID
-    amount: Decimal
+    title: Optional[str] = None
+    transaction_type: str
+    amount: float
+    description: str
     created_at: datetime
 
-    
-    class Config:
-        from_attributes = True
-
+class TransactionCreateProject(BaseModel):
+    project_id: Optional[int] = None
+    transaction_type: str
+    amount: float
 
 

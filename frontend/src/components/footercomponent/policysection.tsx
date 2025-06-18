@@ -1,17 +1,28 @@
 import { VStack, Text, Link } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const PolicySection = () => {
-    return (
-      <VStack align="start" gap={2}>
-        <Text fontWeight="bold">Quy định</Text>
-        <Link fontSize="sm">Quy định đăng tin</Link>
-        <Link fontSize="sm">Quy chế hoạt động</Link>
-        <Link fontSize="sm">Điều khoản thỏa thuận</Link>
-        <Link fontSize="sm">Chính sách bảo mật</Link>
-        <Link fontSize="sm">Giải quyết khiếu nại</Link>
-      </VStack>
-    );
-  };
+  const navigate = useNavigate();
+  return (
+    <VStack align="start" gap={2}>
+      <Text fontWeight="bold">Quy định</Text>
+      <Link fontSize="sm" onClick={() => navigate('/posting-rules')}>
+        Quy định đăng tin
+      </Link>
+      <Link fontSize="sm" onClick={() => navigate('/operating-regulations')}>
+        Quy chế hoạt động
+      </Link>
+      <Link fontSize="sm" onClick={() => navigate('/terms-of-agreement')}>
+        Điều khoản thỏa thuận
+      </Link>
+      <Link fontSize="sm" onClick={() => navigate('/privacy-policy')}>
+        Chính sách bảo mật
+      </Link>
+      <Link fontSize="sm" onClick={() => navigate('/complaint-resolution')}>
+        Giải quyết khiếu nại
+      </Link>
+    </VStack>
+  );
+};
 
 export default PolicySection;
-

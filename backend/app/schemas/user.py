@@ -37,6 +37,59 @@ class UserUpdate(BaseModel):
     phone: Optional[str] = None
     avatar: Optional[str] = None
 
+class UsersManagement(BaseModel):
+    id: UUID
+    email: str
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    avatar: Optional[str] = None
+    is_superuser: bool 
+    is_locked: bool 
+    created_at: datetime
+    updated_at: datetime
+    wallet: Optional[float] = None
+
+    class Config:
+        from_attributes = True
+
+class UsersManagementResponse(BaseModel):
+    data: list[UsersManagement]
+    count: int 
+
+    class Config:
+        from_attributes = True
+
+class Is_Locked(BaseModel):
+    is_locked: bool
+
+class CurrentUserSchema(BaseModel):
+    id: UUID
+    email: EmailStr
+    is_superuser: bool 
+    is_locked: bool 
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class UserAdminResponse(BaseModel):
+    id: UUID
+    email: str
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    avatar: Optional[str] = None
+    is_superuser: bool 
+    is_locked: bool 
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class UserAdminResponseToken(BaseModel):
+    token: str
+    user: UserAdminResponse
+
+
 
 
 

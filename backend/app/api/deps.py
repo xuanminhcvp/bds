@@ -14,7 +14,7 @@ from backend.app.core import security
 from backend.app.core.config import settings
 from backend.app.core.db import AsyncSessionLocal
 from backend.app.model import User 
-from backend.app.schemas.user import UserSchema, UserPublic
+from backend.app.schemas.user import UserSchema, UserPublic, UsersManagement, CurrentUserSchema
 from backend.app.schemas.token import Token, TokenPayload
 from sqlalchemy import select
 from typing import Optional
@@ -44,7 +44,7 @@ class TokenPayload(BaseModel):
         extra = "allow"  
 
 # Get current user
-async def get_current_user(session: SessionDep, token: TokenDep) -> UserPublic:
+async def get_current_user(session: SessionDep, token: TokenDep) -> CurrentUserSchema:
     credentials_exception = HTTPException(
         status_code=status.HTTP_403_FORBIDDEN,
         detail="Could not validate credentials",
@@ -71,17 +71,20 @@ async def get_current_user(session: SessionDep, token: TokenDep) -> UserPublic:
     user = user.scalars().first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
-    user_public = UserPublic(
-        id=str(user.id),
+
+    user_public = CurrentUserSchema(
+        id=user.id,
         email=user.email,
-        name=user.name
+        is_superuser=user.is_superuser,
+        is_locked=user.is_locked,
+        created_at=user.created_at,
     )
+
     return user_public
 
-CurrentUser = Annotated[UserPublic, Depends(get_current_user)]
+CurrentUser = Annotated[CurrentUserSchema, Depends(get_current_user)]
 
-async def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
+async def get_current_active_superuser(current_user: CurrentUser) -> CurrentUserSchema:
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"

@@ -25,9 +25,16 @@ const dashboardSlice: StateCreator<DashboardSlice> = (set, get) => ({
     set({ isLoadingDashboard: true, errorDashboard: null });
     try {
       const { data } = await fetchDashboardStatsAPI();
-      set({ dashboardStats: data, isLoadingDashboard: false, isFetchedDashboard: true });
+      set({
+        dashboardStats: data,
+        isLoadingDashboard: false,
+        isFetchedDashboard: true,
+      });
     } catch (error: any) {
-      set({ isLoadingDashboard: false, errorDashboard: error.response?.data?.message || 'Fetch stats failed' });
+      set({
+        isLoadingDashboard: false,
+        errorDashboard: error.response?.data?.message || 'Fetch stats failed',
+      });
     }
   },
 });

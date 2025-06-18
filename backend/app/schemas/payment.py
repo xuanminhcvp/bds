@@ -14,7 +14,6 @@ class PaymentBase(BaseModel):
 class PaymentCreate(PaymentBase):
     pass 
 
-#done
 class PaymentResponse(PaymentCreate):
     id: UUID
 

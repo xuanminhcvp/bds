@@ -1,0 +1,187 @@
+project/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
+├── src/
+│   ├── assets/                     # Hình ảnh, font, file tĩnh
+│   │   ├── images/
+│   │   └── styles/
+│   ├── components/                 # Các component chung
+│   │   ├── Header.jsx
+│   │   ├── Footer.jsx
+│   │   └── Sidebar.jsx
+│   ├── pages/                      # Các page chính
+│   │   ├── public/                 # Giao diện website thông thường
+│   │   │   ├── Home.jsx
+│   │   │   └── About.jsx
+│   │   ├── user/                   # Giao diện dashboard user
+│   │   │   ├── UserDashboard.jsx
+│   │   │   └── Profile.jsx
+│   │   ├── admin/                  # Giao diện dashboard admin
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   └── ManageUsers.jsx
+│   ├── layouts/                    # Layout cho từng giao diện
+│   │   ├── PublicLayout.jsx
+│   │   ├── UserLayout.jsx
+│   │   └── AdminLayout.jsx
+│   ├── routes/                     # Quản lý route
+│   │   └── index.jsx
+│   ├── stores/                     # Quản lý Zustand stores
+│   │   ├── authStore.js           # Store cho xác thực
+│   │   ├── userStore.js           # Store cho dữ liệu user
+│   │   └── adminStore.js          # Store cho dữ liệu admin
+│   ├── hooks/                      # Custom hooks
+│   │   └── useAuth.js
+│   ├── utils/                      # Hàm tiện ích
+│   │   └── api.js
+│   ├── App.jsx                     # Component gốc
+│   ├── index.js                    # Entry point
+│   └── styles/                     # CSS/SCSS global
+│       ├── App.css
+│       └── reset.css
+├── .gitignore
+├── package.json
+└── README.md
+
+class Project(Base):
+    __tablename__ = "project"
+    project_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    title = Column(String, index=True, nullable=False)
+    description = Column(String)
+    area = Column(Float)
+    address = Column(String)
+    status = Column(String, nullable=False, default="ongoing") 
+    images = Column(ARRAY(String))  
+    company = Column(String)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    user = relationship("User", back_populates="project")
+
+class Property(Base):
+    __tablename__ = "property"
+    property_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    price = Column(Float, nullable=False)  
+    area = Column(Float, nullable=False)  
+    address = Column(String, nullable=False)
+    bedrooms = Column(Integer )
+    bathrooms = Column(Integer )
+    property_type = Column(String, nullable=False)
+    category = Column(String, nullable=False)
+    status = Column(String, nullable=False, default="pending")
+    views = Column(Integer, nullable=False, default=0)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now() + timedelta(days=3))
+    images = relationship("PropertyImage", back_populates="property")
+    user = relationship("User", back_populates="property")
+    transaction = relationship("Transaction", back_populates="property")
+
+class PropertyImage(Base):
+    __tablename__ = "property_image"
+    image_id = Column(Integer, primary_key=True, autoincrement=True)
+    property_id = Column(Integer, ForeignKey("property.property_id"), nullable=False)
+    image_url = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    property = relationship("Property", back_populates="images")
+
+class Transaction(Base):
+    __tablename__ = "transaction"
+    transaction_id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    property_id = Column(Integer, ForeignKey("property.property_id", ondelete="CASCADE"), nullable=True)
+    transaction_type = Column(String, nullable=False)
+    amount = Column(Float, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    user = relationship("User", back_populates="transaction")
+    property = relationship("Property", back_populates="transaction")
+
+class User(Base):
+    __tablename__ = "user"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4 ,unique=True, nullable=False)
+    email = Column(String, unique=True, index=True, nullable=False)
+    is_superuser = Column(Boolean, default=False)
+    name = Column(String)
+    hashed_password = Column(String, nullable=False)
+    phone = Column(String, nullable=True)
+    avatar = Column(String, nullable=True)  
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    update_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now()) 
+    wallet = relationship("Wallet", back_populates="user", cascade=("all, delete"))
+    property = relationship("Property", back_populates="user")
+    transaction = relationship("Transaction", back_populates="user")
+    project = relationship("Project", back_populates="user")
+    notification = relationship("Notification", back_populates="user")
+
+class Wallet(Base):
+    __tablename__ = "wallet"
+    wallet_id = Column(Integer, primary_key=True, autoincrement=True, index=True)    
+    user_id = Column(UUID, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    balance = Column(Float, default=0.0)
+    user = relationship("User", back_populates="wallet")
+
+Voi database co nhung bang nay, thi wallet trong dashboard se co nhung muc nao
+
+
+
+
+SELECT setval('public.transaction_transaction_id_seq', (SELECT MAX(transaction_id) FROM transaction));
+SELECT setval('public.notification_notification_id_seq', (SELECT COALESCE(MAX(notification_id), 0) + 1 FROM notification));
+
+  
+
+
+
+
+
+
+
+Trong ReactJS, việc đặt tên file và các thành phần như component, layout, pages cần tuân theo một số quy tắc và quy ước để đảm bảo mã dễ đọc, nhất quán và dễ bảo trì. Dưới đây là các quy tắc đặt tên phổ biến:
+
+Component (TSX/JSX):
+    Quy tắc: Sử dụng PascalCase (viết hoa chữ cái đầu mỗi từ, không có dấu cách).
+    Lý do: React yêu cầu tên component bắt đầu bằng chữ in hoa để phân biệt với các phần tử HTML thông thường.
+    Ví dụ: Sidebar.tsx, PropertyDetail.tsx, UserProfile.tsx.
+    Lưu ý: File component thường có cùng tên với component chính trong file, ví dụ: component Sidebar được đặt trong file Sidebar.tsx.
+File TSX/JSX:
+    Quy tắc: Sử dụng PascalCase cho file chứa component, vì tên file thường khớp với tên component.
+    Ví dụ: PropertyDetail.tsx, UserCard.tsx.
+    Ngoại lệ: Các file không chứa component (như helper, util) có thể dùng camelCase hoặc kebab-case, ví dụ: apiClient.ts, string-utils.ts.
+Layout:
+    Quy tắc: Sử dụng PascalCase, tương tự component, vì layout thường là một component đặc biệt.
+    Ví dụ: MainLayout.tsx, DashboardLayout.tsx.
+    Lưu ý: Đặt tên phản ánh vai trò của layout, như AuthLayout.tsx cho giao diện đăng nhập/đăng ký.
+Pages:
+    Quy tắc: Sử dụng PascalCase cho file page, vì mỗi page thường là một component đại diện cho một route.
+    Ví dụ: HomePage.tsx, PropertyListPage.tsx, UserProfilePage.tsx.
+    Lưu ý: Nếu sử dụng Next.js, tên file page có thể là kebab-case (ví dụ: property-list.tsx) để khớp với URL, nhưng component bên trong vẫn dùng PascalCase.
+Thư mục:
+    Quy tắc: Sử dụng kebab-case hoặc camelCase cho tên thư mục để dễ đọc và đồng bộ với các công cụ hệ thống file.
+    Ví dụ: components/sidebar, pages/property-list, utils/api.
+    Lưu ý: Tránh viết hoa thư mục để đảm bảo tính tương thích trên các hệ điều hành (Windows, Linux, macOS).
+    File không phải component (utils, hooks, constants, types):
+    Quy tắc: Sử dụng camelCase hoặc kebab-case.
+    Ví dụ: useFetchProperty.ts, apiClient.ts, constants.ts, property-types.ts.
+    Lưu ý: Tên file nên mô tả rõ chức năng, ví dụ: useAuthHook.ts thay vì hook.ts.
+Tên biến và hàm:
+    Quy tắc: Sử dụng camelCase cho biến và hàm, không dùng PascalCase (trừ component).
+    Ví dụ: fetchProperties, propertyList, handleClick.
+Tóm tắt quy ước
+
+Loại	Quy tắc đặt tên	Ví dụ
+Component	PascalCase	Sidebar.tsx, UserCard.tsx
+File TSX/JSX	PascalCase (cho component)	PropertyDetail.tsx
+Layout	PascalCase	MainLayout.tsx
+Pages	PascalCase	HomePage.tsx
+Thư mục	kebab-case/camelCase	components/sidebar, pages/propertyList
+Utils/Hooks	camelCase	useFetch.ts, apiClient.ts
+Biến/Hàm	camelCase	fetchData, userList
+Lời khuyên:
+
+Giữ nhất quán trong toàn bộ dự án (chọn một kiểu đặt tên và áp dụng xuyên suốt).
+Sử dụng các công cụ như ESLint/Prettier với quy tắc đặt tên (ví dụ: react/jsx-pascal-case) để tự động kiểm tra.
+Đặt tên mô tả rõ ràng chức năng, tránh tên chung chung như Component.tsx hoặc Page.tsx.

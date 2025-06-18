@@ -1,14 +1,18 @@
 import { StateCreator } from 'zustand';
-import { fetchWalletAPI, depositAPI, withdrawAPI } from '../services/walletService';
+import {
+  fetchWalletAPI,
+  depositAPI,
+  paymentAPI,
+} from '../services/walletService';
 
 export interface Transaction {
-  type: 'deposit' | 'withdraw';
+  type: 'deposit' | 'paynment';
   amount: number;
   date: string;
 }
 
 export interface Wallet {
-  balance: number
+  balance: number;
 }
 
 export interface WalletSlice {
@@ -18,11 +22,11 @@ export interface WalletSlice {
   isFetchedWallet: boolean;
   fetchWallet: () => Promise<void>;
   deposit: (amount: number) => Promise<{ success: boolean; error?: string }>;
-  withdraw: (amount: number) => Promise<{ success: boolean; error?: string }>;
+  payment: (amount: number) => Promise<{ success: boolean; error?: string }>;
 }
 
 const walletSlice: StateCreator<WalletSlice> = (set, get) => ({
-  wallet: { balance: 0},
+  wallet: { balance: 0 },
   isLoadingWallet: false,
   errorWallet: null,
   isFetchedWallet: false,
@@ -33,7 +37,11 @@ const walletSlice: StateCreator<WalletSlice> = (set, get) => ({
       const { data } = await fetchWalletAPI();
       set({ wallet: data, isLoadingWallet: false, isFetchedWallet: true });
     } catch (error: any) {
-      set({ wallet: { balance: 0}, isLoadingWallet: false, errorWallet: error.response?.data?.message || 'Fetch wallet failed' });
+      set({
+        wallet: { balance: 0 },
+        isLoadingWallet: false,
+        errorWallet: error.response?.data?.message || 'Fetch wallet failed',
+      });
     }
   },
   deposit: async (amount) => {
@@ -48,18 +56,18 @@ const walletSlice: StateCreator<WalletSlice> = (set, get) => ({
       return { success: false, error: message };
     }
   },
-  withdraw: async (amount) => {
+  payment: async (amount) => {
     set({ isLoadingWallet: true, errorWallet: null });
     try {
-      const { data } = await withdrawAPI(amount);
+      const { data } = await paymentAPI(amount);
       set({ wallet: data, isLoadingWallet: false, isFetchedWallet: true });
       return { success: true };
     } catch (error: any) {
-      const message = error.response?.data?.message || 'Withdraw failed';
+      const message = error.response?.data?.message || 'Payment failed';
       set({ isLoadingWallet: false, errorWallet: message });
       return { success: false, error: message };
     }
-  },
+  }
 });
 
 export default walletSlice;

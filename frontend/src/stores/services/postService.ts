@@ -1,8 +1,14 @@
 import api from './api';
-import { PostFilter, Post } from '../slices/postSlice'
+import { PostCreate, PostResponse } from '../../types/post';
 
-export const get_postsAPI = async (params: { page: number; limit: number} & PostFilter ) => {
-    const response = await api.get<{ posts: Post[] }>('/posts', { params: params,}
-    );
-    return response.data;
+export const createPostAPI = async (postData: PostCreate) => {
+  return await api.post<PostResponse>('/post/', postData);
 };
+
+export const fetchPostsAPI = async () => {
+  return await api.get<PostResponse[]>('/post/');
+};
+
+export const fetchPostBySlugAPI = async (slug: string) => {
+  return await api.get<PostResponse>(`/post/${slug}/`);
+}

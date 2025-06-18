@@ -23,14 +23,15 @@ class Property(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
     expires_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now() + timedelta(days=3))
-    images = relationship("PropertyImage", back_populates="property")
+    images = relationship("PropertyImage", back_populates="property", cascade="all, delete-orphan")
     user = relationship("User", back_populates="property")
     transaction = relationship("Transaction", back_populates="property")
+    favorite = relationship("Favorite", back_populates="property", cascade="all, delete-orphan")
 
 class PropertyImage(Base):
     __tablename__ = "property_image"
     image_id = Column(Integer, primary_key=True, autoincrement=True)
-    property_id = Column(Integer, ForeignKey("property.property_id"), nullable=False)
+    property_id = Column(Integer, ForeignKey("property.property_id", ondelete="CASCADE"), nullable=False)
     image_url = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     property = relationship("Property", back_populates="images")

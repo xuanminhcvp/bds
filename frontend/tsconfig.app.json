@@ -23,11 +23,7 @@
     },
     "allowJs": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": [
-    "src",
-    "../src", 
-    "../src/**/*.jsx"        
-  ]
+  "include": ["src", "../src", "../src/**/*.jsx", "../recyclebin/GreetingCard.tsx", "../recyclebin/Wallet.tsx", "../recyclebin/user_property", "../recyclebin/homepage", "../recyclebin/propertyproject.tsx", "../recyclebin/ProtectedRoute.tsx", "../recyclebin/Profile.tsx", "../recyclebin/propertycard.tsx", "../recyclebin/tintuc.tsx", "../recyclebin/propertystats.tsx", "../recyclebin/PropertyList.tsx"]
 }

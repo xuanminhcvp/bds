@@ -55,16 +55,38 @@ class PropertyResponse(BaseModel):
     category: str
     status: str
     views: int
+    created_at: datetime
     updated_at: datetime
     expires_at: datetime
     images: List[PropertyImageResponse]
     user: User
+    is_favorited: Optional[bool] = False  
 
     model_config = {"from_attributes": True} 
 
 class AllPropertyResponse(BaseModel):
     count: int
     result: List[PropertyResponse]
+
+class ExtendedPropertyRequest(BaseModel):
+    days: int 
+
+class StatusUpdate(BaseModel):
+    status: str
+
+class PropertyFilter (BaseModel):
+    property_type: Optional[str] = None
+    category: Optional[str] = None
+    price_min: Optional[float] = None
+    price_max: Optional[float] = None
+    area_min: Optional[float] = None
+    area_max: Optional[float] = None
+    bedrooms: Optional[int] = None
+    bathrooms: Optional[int] = None
+    address: Optional[str] = None
+    title: Optional[str] = None
+    created_at: Optional[datetime] = None
+    
 
 
 

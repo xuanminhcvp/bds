@@ -1,84 +1,87 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  Box,
-  VStack,
-  Heading,
-  Button,
-  IconButton,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { FaBars } from "react-icons/fa";
-import { SIDEBAR_ITEMS } from "../../data/sidebarItems";
-
-function renderSidebarItems(items: any[], navigate: any, onClose?: any) {
-  return items.map((item, idx) => (
-    <VStack key={idx} align="start" w="full" spacing={item.children ? 2 : 0}>
-      <Button
-        leftIcon={item.icon ? <item.icon /> : undefined}
-        variant="ghost"
-        w="full"
-        justifyContent="start"
-        onClick={() => item.onClick(navigate, undefined, onClose)} // bỏ setPostFilters
-      >
-        {item.label}
-      </Button>
-      {item.children && (
-        <VStack pl={6} spacing={2} w="full">
-          {renderSidebarItems(item.children, navigate, onClose)}
-        </VStack>
-      )}
-    </VStack>
-  ));
-}
+import React, { useEffect } from 'react';  
+import { Box, VStack, Icon, Text, Link, useColorModeValue, HStack, Badge } from '@chakra-ui/react';
+import { NavLink } from 'react-router-dom';
+import { FaHome, FaBuilding, FaProjectDiagram, FaWallet, FaBell, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import useRealEstateStore from '../../stores';
+import { toast } from 'sonner'; 
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const bgColor = useColorModeValue('gray.100', 'gray.700');
+  const textColor = useColorModeValue('gray.800', 'white');
+  const { notifications, fetchNotifications, logout } = useRealEstateStore();
   const navigate = useNavigate();
 
+  const unreadCount = notifications.filter((notif) => !notif.is_read).length;
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Đăng xuất thành công!');
+    navigate('/');
+  };
+  const menuItems = [
+    { name: 'Tổng quan', icon: FaHome, path: '/dashboard' },
+    { name: 'Bất động sản', icon: FaBuilding, path: '/userproperty' },
+    { name: 'Dự án', icon: FaProjectDiagram, path: '/userproject' },
+    { name: 'Ví tiền', icon: FaWallet, path: '/wallet' },
+    { name: 'Thông báo', icon: FaBell, path: '/notifications' },
+    { name: 'Hồ sơ', icon: FaUser, path: '/userupdate' },
+  ];
+
   return (
-    <>
-      <IconButton
-        aria-label="Mở menu"
-        icon={<FaBars />}
-        onClick={onOpen}
-        display={{ base: "block", md: "none" }}
-        position="fixed"
-        top={4}
-        left={4}
-        zIndex={10}
-      />
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Tổng quan</DrawerHeader>
-          <DrawerBody>
-            <VStack align="start" spacing={4}>
-              {renderSidebarItems(SIDEBAR_ITEMS, navigate, onClose)}
-            </VStack>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-      <Box
-        bg="white"
-        boxShadow="md"
-        h="100vh"
-        w="64"
-        display={{ base: "none", md: "block" }}
-      >
-        <VStack align="start" p={4} spacing={4}>
-          <Heading size="md">Tổng quan</Heading>
-          {renderSidebarItems(SIDEBAR_ITEMS, navigate)}
-        </VStack>
-      </Box>
-    </>
+    <Box w="200px" h="100vh" bg={bgColor} p={4} boxShadow="md">
+      <VStack spacing={4} align="start" mt={4}>
+        {menuItems.map((item) => (
+          <Link as={NavLink} to={item.path} key={item.name} w="full" _hover={{ textDecoration: 'none' }}>
+            <HStack
+              p={2}
+              borderRadius="md"
+              _hover={{ bg: 'teal', color: 'white' }}
+              color={textColor}
+              borderBottom="1px"
+              borderColor="gray.300"
+              align={'center'}
+            >
+              <Icon as={item.icon} />
+              <Text
+                fontWeight="normal"
+                fontSize="lg"
+              >
+                {item.name}
+              </Text>
+              {item.name === 'Thông báo' && unreadCount > 0 && (
+                <Badge colorScheme="red" borderRadius="full" px={2}>
+                  {unreadCount}
+                </Badge>
+              )}
+            </HStack>
+          </Link>
+        ))}
+        <Link as={NavLink} to="/" onClick={handleLogout} w="full" _hover={{ textDecoration: 'none' }}>
+          <HStack
+            p={2}
+            borderRadius="md"
+            _hover={{ bg: 'teal', color: 'white' }}
+            color={textColor}
+            borderBottom="1px"
+            borderColor="gray.300"
+            align={'center'}
+          >
+            <Icon as={FaSignOutAlt} />
+            <Text
+              fontWeight="normal"
+              fontSize="lg"
+            >
+              Đăng xuất
+            </Text>
+          </HStack>
+        </Link>
+      </VStack>
+    </Box>
   );
 };
 
